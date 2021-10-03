@@ -18,7 +18,6 @@ import platform
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -30,13 +29,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
-	'user',
-	'corsheaders',
-	'captcha',
+    'user',
+    'corsheaders',
+    'captcha',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,21 +48,21 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-	'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
-CORS_ORIGIN_ALLOW_ALL = False   # 允许所有源访问
+CORS_ORIGIN_ALLOW_ALL = False  # 允许所有源访问
 CORS_ORIGIN_WHITELIST = (
-    'http://127.0.0.1:8000',    #设置白名单
+    'http://127.0.0.1:8000',  # 设置白名单
     'http://localhost:8000',
 )
 
 CORS_ALLOW_METHODS = (
-    'DELETE',                 #允许的方法
+    'DELETE',  # 允许的方法
     'GET',
     'OPTIONS',
     'PATCH',
@@ -77,7 +75,7 @@ CORS_ALLOW_HEADERS = (
     'XMLHttpRequest',
     'X_FILENAME',
     'accept-encoding',
-    'authorization',          #允许的请求头
+    'authorization',  # 允许的请求头
     'content-type',
     'dnt',
     'origin',
@@ -117,13 +115,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': YAMLINFO['dbname'],
-		'HOST': YAMLINFO['dbhost'],
-		'USER': YAMLINFO['dbuser'],
-		'PASSWORD': YAMLINFO['dbpassword'],
-		'PORT': '3306'
+        'HOST': YAMLINFO['dbhost'],
+        'USER': YAMLINFO['dbuser'],
+        'PASSWORD': YAMLINFO['dbpassword'],
+        'PORT': '3306'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -143,7 +140,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -157,13 +153,11 @@ USE_L10N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'img').replace('\\', '/')
-
+MEDIA_ROOT = os.path.join(BASE_DIR, 'img').replace('\\', '/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -171,17 +165,19 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'img').replace('\\', '/')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email settings
-EMAIL_HOST = "smtp.163.com"						# 服务器
-EMAIL_USE_SSL = True							# 服务器端设置
-EMAIL_PORT = 465								# 本地为25,服务器为465
-EMAIL_HOST_USER = YAMLINFO['emailuser']			# 账号
-EMAIL_HOST_PASSWORD = YAMLINFO['emailpassword']	# 密码 (注意：这里的密码指的是授权码)
-EMAIL_USE_TLS = False							# 一般都为False
-EMAIL_FROM = YAMLINFO['emailuser']				# 邮箱来自
+EMAIL_HOST = "smtp.163.com"  # 服务器
+EMAIL_USE_SSL = True  # 服务器端设置
+EMAIL_PORT = 465  # 本地为25,服务器为465
+EMAIL_HOST_USER = YAMLINFO['emailuser']  # 账号
+EMAIL_HOST_PASSWORD = YAMLINFO['emailpassword']  # 密码 (注意：这里的密码指的是授权码)
+EMAIL_USE_TLS = False  # 一般都为False
+EMAIL_FROM = YAMLINFO['emailuser']  # 邮箱来自
 
 CAPTCHA_IMAGE_SIZE = (178, 56)
 
 CAPTCHA_NOISE_FUNCTIONS = (
-	'captcha.helpers.noise_null',
-	'captcha.helpers.noise_dots',
+    'captcha.helpers.noise_null',
+    'captcha.helpers.noise_dots',
 )
+
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
