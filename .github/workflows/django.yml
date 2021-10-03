@@ -10,4 +10,4 @@ jobs:
 
     steps:
       - name: pull and reload
-        run: sshpass -p Marvolo+-* ssh -o StrictHostKeyChecking=no root@123.57.194.168 "cd ~/root/academic; git pull;"
+        run: sshpass -p Marvolo+-* ssh -o StrictHostKeyChecking=no root@123.57.194.168 "cd ~/academic; git pull;"
