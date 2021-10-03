@@ -8,6 +8,6 @@ from academic.values import *
 @csrf_exempt
 def test(request):
 	if request.method == 'POST':
-		return JsonResponse({'result': ACCEPT, 'message': r'POST!!'})
+		return JsonResponse({'result': ACCEPT, 'message': r'POST!'})
 	else:
-		return JsonResponse({'result': ACCEPT, 'message': r'GET!!'})
+		return JsonResponse({'result': ACCEPT, 'message': r'GET!'})
