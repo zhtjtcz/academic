@@ -185,3 +185,5 @@ CAPTCHA_NOISE_FUNCTIONS = (
 	'captcha.helpers.noise_null',
 	'captcha.helpers.noise_dots',
 )
+
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
