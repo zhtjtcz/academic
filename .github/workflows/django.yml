@@ -10,4 +10,4 @@ jobs:
 
     steps:
       - name: pull and reload
-        run: sshpass -p Marvolo+-* ssh -o StrictHostKeyChecking=no root@123.57.194.168 "cd ~/academic; git pull; python kill.py; python run.py;"
+        run: sshpass -p ${{secrets.ECS_PASSWORD}} ssh -o StrictHostKeyChecking=no root@${{secrets.ECS_IP}} "cd ~/academic; git pull; python kill.py; python run.py;"
