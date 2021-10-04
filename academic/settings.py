@@ -57,6 +57,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ORIGIN_ALLOW_ALL = False   # 允许所有源访问
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8000',    #设置白名单
