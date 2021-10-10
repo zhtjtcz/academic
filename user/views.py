@@ -8,6 +8,8 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view
 # Create your views here.
+from user.models import *
+import json
 
 '''
 @swagger_auto_schema(method='post',
@@ -24,3 +26,27 @@ def test(request):
 		return JsonResponse({'result': ACCEPT, 'message': r'POST!'})
 	else:
 		return JsonResponse({'result': ACCEPT, 'message': r'GET!'})
+
+@csrf_exempt
+def set_introduction(request):
+	if request.method == 'POST':
+		# TODO check session
+		data_json = json.loads(request.body)
+		uid = int(data_json['uid'])
+		introduction = data_json['introduction']
+		scholar = Scholar.objects.get(uid = uid)
+		scholar.introduction = introduction
+		scholar.save()
+		return JsonResponse({'result': ACCEPT, 'message': r'修改成功!'})
+
+@csrf_exempt
+def get_introduction(request):
+	if request.method == 'POST':
+		# TODO check session
+		data_json = json.loads(request.body)
+		uid = int(data_json['uid'])
+		scholar = Scholar.objects.get(uid = uid)
+		intro = scholar.introduction
+		if intro == None:
+			intro = INTO_TEMPLATE
+		return JsonResponse({'result': ACCEPT, 'message': r'获取成功!', 'introduction':intro})
