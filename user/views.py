@@ -33,9 +33,10 @@ def set_introduction(request):
 		# TODO check session
 		data_json = json.loads(request.body)
 		uid = int(data_json['uid'])
-		introduction = data_json['introduction']
+		introduction_html = data_json['introduction_html']
+		introduction_md = data_json['introduction_md']
 		scholar = Scholar.objects.get(uid = uid)
-		scholar.introduction = introduction
+		scholar.introduction = introduction_md + MAGIC + introduction_html
 		scholar.save()
 		return JsonResponse({'result': ACCEPT, 'message': r'修改成功!'})
 
@@ -48,5 +49,8 @@ def get_introduction(request):
 		scholar = Scholar.objects.get(uid = uid)
 		intro = scholar.introduction
 		if intro == None:
-			intro = INTO_TEMPLATE
-		return JsonResponse({'result': ACCEPT, 'message': r'获取成功!', 'introduction':intro})
+			intro_md = INTO_TEMPLATE_MD
+			intro_html = INTO_TEMPLATE_HTML
+		else:
+			intro_md,intro_html = intro.split(MAGIC)
+		return JsonResponse({'result': ACCEPT, 'message': r'获取成功!', 'introduction_md':intro_md, 'introduction_html':intro_html})
