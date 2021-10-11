@@ -17,7 +17,7 @@ def nomalSearch(title):
 
 	origin = es.search(index='small', body=mapping)
 	papers = origin["hits"]["hits"]
-	papers = [x for x in papers["_source"]]
+	papers = [x["_source"] for x in papers]
 	result = {
 		"paper": papers,
 		"total": len(papers)
