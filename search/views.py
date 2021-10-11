@@ -10,6 +10,6 @@ import json
 def search(request):
 	if request.method == 'POST':
 		data_json = json.loads(request.body)
-		mapping = data_json.get('mapping')
-		result = nomalSearch(mapping)
+		title = data_json.get('title')
+		result = nomalSearch(title)
 		return JsonResponse({'result': ACCEPT, 'message': result})
