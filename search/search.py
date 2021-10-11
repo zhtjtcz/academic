@@ -1,24 +1,25 @@
 from elasticsearch import Elasticsearch
 
-def nomalSearch(mapping):
+def nomalSearch(title):
 	es = Elasticsearch(
 		hosts = 'localhost:9200'
 	)
 	
-	'''
 	mapping = {
 		"query": {
 			"match": {
-				"title": "hello the beautiful world!"
+				"title": title
 			}
 		},
-		"highlight": {
-			"fields": {
-				"title": {}
-			}
-		}
+		"from": 0,
+		"size": 100,
 	}
-	'''
 
-	result = es.search(index='test', body=mapping)
+	origin = es.search(index='small', body=mapping)
+	papers = origin["hits"]["hits"]
+	papers = [x for x in papers["_source"]]
+	result = {
+		"paper": papers,
+		"total": len(papers)
+	}
 	return result
