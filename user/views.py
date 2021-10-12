@@ -20,12 +20,31 @@ import json
                      )
 @api_view(['POST'])
 '''
+
 @csrf_exempt
 def test(request):
 	if request.method == 'POST':
 		return JsonResponse({'result': ACCEPT, 'message': r'POST!'})
 	else:
 		return JsonResponse({'result': ACCEPT, 'message': r'GET!'})
+
+@csrf_exempt
+def login(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		# TODO login
+		# username = data_json['username']
+
+		return JsonResponse({'result': ACCEPT, 'message': r''})
+
+@csrf_exempt
+def register(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		# TODO register
+		# username = data_json['username']
+
+		return JsonResponse({'result': ACCEPT, 'message': r''})
 
 @csrf_exempt
 def set_introduction(request):
