@@ -10,6 +10,7 @@ from rest_framework.decorators import api_view
 # Create your views here.
 from user.models import *
 import json
+import re
 
 '''
 @swagger_auto_schema(method='post',
@@ -21,55 +22,75 @@ import json
 @api_view(['POST'])
 '''
 
+
 @csrf_exempt
 def test(request):
-	if request.method == 'POST':
-		return JsonResponse({'result': ACCEPT, 'message': r'POST!'})
-	else:
-		return JsonResponse({'result': ACCEPT, 'message': r'GET!'})
+    if request.method == 'POST':
+        return JsonResponse({'result': ACCEPT, 'message': r'POST!'})
+    else:
+        return JsonResponse({'result': ACCEPT, 'message': r'GET!'})
+
 
 @csrf_exempt
 def login(request):
-	if request.method == 'POST':
-		data_json = json.loads(request.body)
-		# TODO login
-		# username = data_json['username']
+    if request.method == 'POST':
+        data_json = json.loads(request.body)
+        # TODO login
+        # username = data_json['username']
 
-		return JsonResponse({'result': ACCEPT, 'message': r''})
+        return JsonResponse({'result': ACCEPT, 'message': r''})
+
 
 @csrf_exempt
 def register(request):
-	if request.method == 'POST':
-		data_json = json.loads(request.body)
-		# TODO register
-		# username = data_json['username']
+    if request.method == 'POST':
+        data_json = json.loads(request.body)
+        username = data_json['username']
+        password = data_json['password']
+        check_password = data_json['check_password']
+        user = User.objects.get(username=username)
+        if user is not None:
+            return JsonResponse({'result': ERROR, 'message': r'用户名已存在'})
+        if not 1 <= len(str(username)) <= 32:
+            return JsonResponse({'result': ERROR, 'message': r'用户名格式不正确'})
+        if not re.match('^((?=.*[0-9].*)(?=.*[A-Z].*)|(?=.*[0-9].*)(?=.*[a-z].*)|(?=.*[a-z].*)(?=.*[A-Z].*)).{6,16}$',
+                        password):
+            return JsonResponse({'result': ERROR, 'message': r'密码不合法'})
+        if password != check_password:
+            return JsonResponse({'result': ERROR, 'message': r'两次密码不一致'})
+        password = password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
+            password[-1:]
+        user = User(username=username, password=password)
+        user.save()
+        return JsonResponse({'result': ACCEPT, 'message': r'注册成功'})
 
-		return JsonResponse({'result': ACCEPT, 'message': r''})
 
 @csrf_exempt
 def set_introduction(request):
-	if request.method == 'POST':
-		# TODO check session
-		data_json = json.loads(request.body)
-		uid = int(data_json['uid'])
-		introduction_html = data_json['introduction_html']
-		introduction_md = data_json['introduction_md']
-		scholar = Scholar.objects.get(uid = uid)
-		scholar.introduction = introduction_md + MAGIC + introduction_html
-		scholar.save()
-		return JsonResponse({'result': ACCEPT, 'message': r'修改成功!'})
+    if request.method == 'POST':
+        # TODO check session
+        data_json = json.loads(request.body)
+        uid = int(data_json['uid'])
+        introduction_html = data_json['introduction_html']
+        introduction_md = data_json['introduction_md']
+        scholar = Scholar.objects.get(uid=uid)
+        scholar.introduction = introduction_md + MAGIC + introduction_html
+        scholar.save()
+        return JsonResponse({'result': ACCEPT, 'message': r'修改成功!'})
+
 
 @csrf_exempt
 def get_introduction(request):
-	if request.method == 'POST':
-		# TODO check session
-		data_json = json.loads(request.body)
-		uid = int(data_json['uid'])
-		scholar = Scholar.objects.get(uid = uid)
-		intro = scholar.introduction
-		if intro == None:
-			intro_md = INTO_TEMPLATE_MD
-			intro_html = INTO_TEMPLATE_HTML
-		else:
-			intro_md,intro_html = intro.split(MAGIC)
-		return JsonResponse({'result': ACCEPT, 'message': r'获取成功!', 'introduction_md':intro_md, 'introduction_html':intro_html})
+    if request.method == 'POST':
+        # TODO check session
+        data_json = json.loads(request.body)
+        uid = int(data_json['uid'])
+        scholar = Scholar.objects.get(uid=uid)
+        intro = scholar.introduction
+        if intro is None:
+            intro_md = INTO_TEMPLATE_MD
+            intro_html = INTO_TEMPLATE_HTML
+        else:
+            intro_md, intro_html = intro.split(MAGIC)
+        return JsonResponse(
+            {'result': ACCEPT, 'message': r'获取成功!', 'introduction_md': intro_md, 'introduction_html': intro_html})
