@@ -48,8 +48,8 @@ def register(request):
         username = data_json['username']
         password = data_json['password']
         check_password = data_json['check_password']
-        user = User.objects.get(username=username)
-        if user is not None:
+        email = data_json['email']
+        if User.objects.filter(username=username).exists():
             return JsonResponse({'result': ERROR, 'message': r'用户名已存在'})
         if not 1 <= len(str(username)) <= 32:
             return JsonResponse({'result': ERROR, 'message': r'用户名格式不正确'})
@@ -60,7 +60,7 @@ def register(request):
             return JsonResponse({'result': ERROR, 'message': r'两次密码不一致'})
         password = password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
             password[-1:]
-        user = User(username=username, password=password)
+        user = User(username=username, password=password, email=email)
         user.save()
         return JsonResponse({'result': ACCEPT, 'message': r'注册成功'})
 
