@@ -48,7 +48,7 @@ def login(request):
         if password != user.password:
             return JsonResponse({'result': ERROR, 'message': r'密码错误'})
         request.session['is_login'] = True
-        request.session['user'] = username
+        request.session['user'] = user.id
         return JsonResponse({'result': ACCEPT, 'message': r'登录成功!'})
     else:
         print('IP is', request.META.get('HTTP_X_REAL_IP'))
