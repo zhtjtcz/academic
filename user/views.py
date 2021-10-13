@@ -10,6 +10,7 @@ from rest_framework.decorators import api_view
 # Create your views here.
 from user.models import *
 import json
+from hashlib import md5
 import re
 
 '''
@@ -34,11 +35,23 @@ def test(request):
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
+        if request.session.get('is_login'):
+            return JsonResponse({'result': ERROR, 'message': r'已登录!'})
         data_json = json.loads(request.body)
-        # TODO login
-        # username = data_json['username']
-
-        return JsonResponse({'result': ACCEPT, 'message': r''})
+        username = data_json['username']
+        password = data_json['password']
+        if not User.objects.filter(username=username).exists():
+            return JsonResponse({'result': ERROR, 'message': r'用户名不存在'})
+        user = User.objects.get(username=username)
+        password = md5(password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
+                       password[-1:])
+        if password != user.password:
+            return JsonResponse({'result': ERROR, 'message': r'密码错误'})
+        request.session['is_login'] = True
+        request.session['user'] = username
+        return JsonResponse({'result': ACCEPT, 'message': r'登录成功!'})
+    else:
+        print('IP is', request.META.get('HTTP_X_REAL_IP'))
 
 
 @csrf_exempt
@@ -58,8 +71,9 @@ def register(request):
             return JsonResponse({'result': ERROR, 'message': r'密码不合法'})
         if password != check_password:
             return JsonResponse({'result': ERROR, 'message': r'两次密码不一致'})
-        password = password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
-            password[-1:]
+        password = md5(password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
+                       password[-1:])
+        password = md5(password)
         user = User(username=username, password=password, email=email)
         user.save()
         return JsonResponse({'result': ACCEPT, 'message': r'注册成功'})
