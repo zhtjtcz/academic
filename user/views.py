@@ -35,8 +35,16 @@ def test(request):
 def login(request):
     if request.method == 'POST':
         data_json = json.loads(request.body)
-        # TODO login
-        # username = data_json['username']
+        username = data_json['username']
+        password = data_json['password']
+        user = User.objects.get(username=username)
+        if user is None:
+            return JsonResponse({'result': ERROR, 'message': r'用户名不存在'})
+        if not 1 <= len(str(username)) <= 32:
+            return JsonResponse({'result': ERROR, 'message': r'用户名格式不正确'})
+        if not re.match('^((?=.*[0-9].*)(?=.*[A-Z].*)|(?=.*[0-9].*)(?=.*[a-z].*)|(?=.*[a-z].*)(?=.*[A-Z].*)).{6,16}$',
+                        password):
+            return JsonResponse({'result': ERROR, 'message': r'密码不合法'})
 
         return JsonResponse({'result': ACCEPT, 'message': r''})
 
