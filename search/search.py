@@ -7,7 +7,7 @@ def nomalSearch(title):
 	
 	mapping = {
 		"query": {
-			"match": {
+			"fuzzy": {
 				"title": title
 			}
 		},
