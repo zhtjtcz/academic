@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
 	'user',
 	'search',
+	'paper',
 	'corsheaders',
 	# 'captcha',
 	'drf_yasg2',
