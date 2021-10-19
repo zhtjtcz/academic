@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from paper.models import *
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from academic.values import *
 import json
 import arxiv
@@ -35,6 +36,7 @@ def create_paper(info):
 		author.save()
 	return paper.id
 
+@csrf_exempt
 def claim_paper(request):
 	if request.method == 'POST':
 		uid = request.session.get('user', -1)
@@ -48,6 +50,7 @@ def claim_paper(request):
 		claim.save()
 		return JsonResponse({'result': ACCEPT, 'message': r'认领成功！'})
 
+@csrf_exempt
 def download(request):
 	if request.method == 'POST':
 		if request.session.get('user', -1) == -1:
