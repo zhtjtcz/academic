@@ -42,5 +42,6 @@ urlpatterns = [
 	# path('captcha/', include('captcha.urls')),
 	path('user/', include(('user.urls', 'user'), namespace="user")),
 	path('search/', include(('search.urls', 'search'), namespace="search")),
+	path('paper/', include(('paper.urls', 'paper'), namespace="paper")),
 	# url(r'^img/(?P<path>.*)$', static.serve, {'document_root': settings.MEDIA_ROOT}),
 ]
