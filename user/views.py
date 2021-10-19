@@ -43,8 +43,9 @@ def login(request):
         if not User.objects.filter(username=username).exists():
             return JsonResponse({'result': ERROR, 'message': r'用户名不存在'})
         user = User.objects.get(username=username)
-        password = md5(password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
-                       password[-1:])
+        password =password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
+                       password[-1:]
+        password = password.encode("utf8")
         if password != user.password:
             return JsonResponse({'result': ERROR, 'message': r'密码错误'})
         request.session['is_login'] = True
@@ -71,9 +72,9 @@ def register(request):
             return JsonResponse({'result': ERROR, 'message': r'密码不合法'})
         if password != check_password:
             return JsonResponse({'result': ERROR, 'message': r'两次密码不一致'})
-        password = md5(password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
-                       password[-1:])
-        password = md5(password)
+        password = password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
+                       password[-1:]
+        password = md5(password.encode("utf8"))
         user = User(username=username, password=password, email=email)
         user.save()
         return JsonResponse({'result': ACCEPT, 'message': r'注册成功'})
