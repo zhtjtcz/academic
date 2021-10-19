@@ -19,3 +19,7 @@ class AuthorInfo(models.Model):
 	pid = models.IntegerField()
 	author = models.CharField(max_length = 50)
 	rank = models.IntegerField()
+
+class Claim(models.Model):
+	uid = models.IntegerField()
+	pid = models.IntegerField()
