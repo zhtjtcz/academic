@@ -37,7 +37,7 @@ def create_paper(info):
 
 def claim_paper(request):
 	if request.method == 'POST':
-		uid = request.session.get('id', -1)
+		uid = request.session.get('user', -1)
 		data_json = json.loads(request.body)
 		paper = data_json.get('paper', {})
 		if Paper.objects.filter(title = paper['title']).exists() == False:
@@ -50,7 +50,7 @@ def claim_paper(request):
 
 def download(request):
 	if request.method == 'POST':
-		if request.session.get('id', -1) == -1:
+		if request.session.get('user', -1) == -1:
 			return JsonResponse({'result': ERROR, 'message':r'请先登录！'})
 		data_json = json.loads(request.body)
 		if data_json.get('title', -1) != -1:
