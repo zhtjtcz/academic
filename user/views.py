@@ -45,7 +45,7 @@ def login(request):
         user = User.objects.get(username=username)
         password =password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
                        password[-1:]
-        password = password.encode("utf8")
+        password = md5(password.encode("utf8")).hexdigest()
         if password != user.password:
             return JsonResponse({'result': ERROR, 'message': r'密码错误'})
         request.session['is_login'] = True
@@ -74,7 +74,7 @@ def register(request):
             return JsonResponse({'result': ERROR, 'message': r'两次密码不一致'})
         password = password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
                        password[-1:]
-        password = md5(password.encode("utf8"))
+        password = md5(password.encode("utf8")).hexdigest()
         user = User(username=username, password=password, email=email)
         user.save()
         return JsonResponse({'result': ACCEPT, 'message': r'注册成功'})
