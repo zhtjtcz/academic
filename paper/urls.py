@@ -1,5 +1,7 @@
 from django.urls import path
-from search.views import *
+from paper.views import *
 
 urlpatterns = [
+	path('claim_paper', claim_paper),
+	path('download', download),
 ]
