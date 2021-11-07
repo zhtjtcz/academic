@@ -15,7 +15,7 @@ import re
 
 '''
 @swagger_auto_schema(method='post',
-                     tags=['用户登录注册相关'],
+	                 tags=['用户登录注册相关'],
                      operation_summary='登录',
                      responses={200: '登录成功', 401: '用户重复登录', 402: '用户名不存在', 403: '密码错误', 404: '用户未经过邮箱确认', 405: '表单格式错误，即用户名或密码不符合规则'},
                      manual_parameters=['A', 'B']
@@ -109,3 +109,12 @@ def get_introduction(request):
             intro_md, intro_html = intro.split(MAGIC)
         return JsonResponse(
             {'result': ACCEPT, 'message': r'获取成功!', 'introduction_md': intro_md, 'introduction_html': intro_html})
+
+
+@csrf_exempt
+def logout(request):
+	if request.session.get('is_login'):
+		request.session.flush()
+		return JsonResponse({'result': ACCEPT, 'message': r'已登出!'})
+	else:
+		return JsonResponse({'result':ERROR, 'message': r'请先登录!'})
