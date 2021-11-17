@@ -86,7 +86,7 @@ def set_introduction(request):
         if request.session.get('is_login') is None:
             return JsonResponse({'result': ERROR, 'message': r'请先登录'})
         data_json = json.loads(request.body)
-        uid = int(data_json['uid'])
+        uid = request.session['user']
         introduction_html = data_json['introduction_html']
         introduction_md = data_json['introduction_md']
         scholar = Scholar.objects.get(uid=uid)
@@ -100,8 +100,7 @@ def get_introduction(request):
     if request.method == 'POST':
         if request.session.get('is_login') is None:
             return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-        data_json = json.loads(request.body)
-        uid = int(data_json['uid'])
+        uid = request.session['user']
         scholar = Scholar.objects.get(uid=uid)
         intro = scholar.introduction
         if intro is None:
@@ -119,12 +118,12 @@ def set_scholar_info(request):
         return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
     if request.session.get('is_login') is None:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-    data_json = json.loads(request.body)
-    id = int(data_json['id'])
+    id = request.session['user']
     info = User.objects.get(id=id)
     if not info.scholar:
         return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
-    scholar = Scholar.objects.get(uid=info.id)
+    data_json = json.loads(request.body)
+    scholar = Scholar.objects.get(uid=id)
     scholar.realname = data_json['realname']
     scholar.website = data_json['website']
     scholar.interest = data_json['interest']
@@ -140,8 +139,7 @@ def get_scholar_info(request):
         return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
     if request.session.get('is_login') is None:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-    data_json = json.loads(request.body)
-    id = int(data_json['id'])
+    id = request.session['user']
     info = User.objects.get(id=id)
     if not info.scholar:
         return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
