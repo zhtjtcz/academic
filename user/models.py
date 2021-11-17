@@ -19,3 +19,4 @@ class Scholar(models.Model):
     website = models.CharField(max_length=50, null=True, blank=True)
     introduction = models.TextField(null=True, blank=True)
     download = models.IntegerField(default=0)
+    cite = models.IntegerField(default=0)
