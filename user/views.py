@@ -149,7 +149,7 @@ def get_scholar_info(request):
         return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
     scholar = Scholar.objects.get(uid=info.id)
     return JsonResponse(
-        {'result': ACCEPT, 'message': r'修改成功!', 'realname': scholar.realname, 'website': scholar.website,
+        {'result': ACCEPT, 'message': r'获取成功!', 'realname': scholar.realname, 'website': scholar.website,
          'interest': scholar.interest, 'belong': scholar.belong, 'download': scholar.download, 'cite':scholar.cite})
 
 
