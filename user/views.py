@@ -83,7 +83,7 @@ def register(request):
 @csrf_exempt
 def set_introduction(request):
     if request.method == 'POST':
-        if request.session.get('is_login') is None:
+        if request.session.get('is_login') is not True:
             return JsonResponse({'result': ERROR, 'message': r'请先登录'})
         data_json = json.loads(request.body)
         uid = request.session['user']
@@ -98,7 +98,7 @@ def set_introduction(request):
 @csrf_exempt
 def get_introduction(request):
     if request.method == 'POST':
-        if request.session.get('is_login') is None:
+        if request.session.get('is_login') is not True:
             return JsonResponse({'result': ERROR, 'message': r'请先登录'})
         uid = request.session['user']
         scholar = Scholar.objects.get(uid=uid)
@@ -116,7 +116,7 @@ def get_introduction(request):
 def set_scholar_info(request):
     if request.method != 'POST':
         return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
-    if request.session.get('is_login') is None:
+    if request.session.get('is_login') is not True:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
     id = request.session['user']
     info = User.objects.get(id=id)
@@ -137,7 +137,7 @@ def set_scholar_info(request):
 def get_scholar_info(request):
     if request.method != 'POST':
         return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
-    if request.session.get('is_login') is None:
+    if request.session.get('is_login') is not True:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
     id = request.session['user']
     info = User.objects.get(id=id)
@@ -148,10 +148,11 @@ def get_scholar_info(request):
         {'result': ACCEPT, 'message': r'修改成功!', 'realname': scholar.realname, 'website': scholar.website,
          'interest': scholar.interest, 'belong': scholar.belong})
 
+
 @csrf_exempt
 def logout(request):
-	if request.session.get('is_login'):
-		request.session.flush()
-		return JsonResponse({'result': ACCEPT, 'message': r'已登出!'})
-	else:
-		return JsonResponse({'result':ERROR, 'message': r'请先登录!'})
+    if request.session.get('is_login'):
+        request.session.flush()
+        return JsonResponse({'result': ACCEPT, 'message': r'已登出!'})
+    else:
+        return JsonResponse({'result': ERROR, 'message': r'请先登录!'})
