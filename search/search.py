@@ -1,10 +1,7 @@
 from elasticsearch import Elasticsearch
+from academic.values import *
 
 def nomalSearch(title):
-	es = Elasticsearch(
-		hosts = 'localhost:9200'
-	)
-	
 	mapping = {
 		"query": {
 			"fuzzy": {
@@ -15,7 +12,7 @@ def nomalSearch(title):
 		"size": 100,
 	}
 
-	origin = es.search(index='small', body=mapping)
+	origin = ES.search(index='small', body=mapping)
 	papers = origin["hits"]["hits"]
 	papers = [x["_source"] for x in papers]
 	result = {
