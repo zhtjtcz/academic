@@ -147,3 +147,11 @@ def get_scholar_info(request):
     return JsonResponse(
         {'result': ACCEPT, 'message': r'修改成功!', 'realname': scholar.realname, 'website': scholar.website,
          'interest': scholar.interest, 'belong': scholar.belong})
+
+@csrf_exempt
+def logout(request):
+	if request.session.get('is_login'):
+		request.session.flush()
+		return JsonResponse({'result': ACCEPT, 'message': r'已登出!'})
+	else:
+		return JsonResponse({'result':ERROR, 'message': r'请先登录!'})
