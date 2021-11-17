@@ -1,3 +1,5 @@
+from elasticsearch import Elasticsearch
+
 ERROR = 0
 ACCEPT = 1
 
@@ -10,3 +12,7 @@ SALT1 = 'a'
 SALT2 = 'w'
 SALT3 = '1'
 SALT4 = '7'
+
+ES = Elasticsearch(
+	hosts = '123.57.194.168:9200'
+)
