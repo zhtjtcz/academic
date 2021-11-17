@@ -35,8 +35,8 @@ def test(request):
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
-        if request.session.get('is_login'):
-            return JsonResponse({'result': ERROR, 'message': r'已登录!'})
+        # if request.session.get('is_login') is not True:
+        #     return JsonResponse({'result': ERROR, 'message': r'已登录!'})
         data_json = json.loads(request.body)
         username = data_json['username']
         password = data_json['password']
@@ -83,10 +83,11 @@ def register(request):
 @csrf_exempt
 def set_introduction(request):
     if request.method == 'POST':
-        if request.session.get('is_login') is not True:
-            return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+        # if request.session.get('is_login') is not True:
+        #     return JsonResponse({'result': ERROR, 'message': r'请先登录'})
         data_json = json.loads(request.body)
-        uid = request.session['user']
+        # uid = request.session['user']
+        uid = 1
         introduction_html = data_json['introduction_html']
         introduction_md = data_json['introduction_md']
         scholar = Scholar.objects.get(uid=uid)
@@ -98,9 +99,10 @@ def set_introduction(request):
 @csrf_exempt
 def get_introduction(request):
     if request.method == 'POST':
-        if request.session.get('is_login') is not True:
-            return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-        uid = request.session['user']
+        # if request.session.get('is_login') is not True:
+        #     return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+        # uid = request.session['user']
+        uid = 1
         scholar = Scholar.objects.get(uid=uid)
         intro = scholar.introduction
         if intro is None:
@@ -116,9 +118,10 @@ def get_introduction(request):
 def set_scholar_info(request):
     if request.method != 'POST':
         return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
-    if request.session.get('is_login') is not True:
-        return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-    id = request.session['user']
+    # if request.session.get('is_login') is not True:
+    #     return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+    # id = request.session['user']
+    id = 1
     info = User.objects.get(id=id)
     if not info.scholar:
         return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
@@ -137,9 +140,10 @@ def set_scholar_info(request):
 def get_scholar_info(request):
     if request.method != 'POST':
         return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
-    if request.session.get('is_login') is not True:
-        return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-    id = request.session['user']
+    # if request.session.get('is_login') is not True:
+    #     return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+    # id = request.session['user']
+    id = 1
     info = User.objects.get(id=id)
     if not info.scholar:
         return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
