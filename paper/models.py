@@ -15,7 +15,7 @@ class Paper(models.Model):
     lang = models.CharField(max_length=20, null=True, blank=True)
     doi = models.CharField(max_length=50, null=True, blank=True)
     field = models.TextField(null=True, blank=True)
-    download = models.IntegerField(null=True, blank=True)
+    download = models.IntegerField(default=0)
 
 
 class AuthorInfo(models.Model):

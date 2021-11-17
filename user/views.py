@@ -150,7 +150,7 @@ def get_scholar_info(request):
     scholar = Scholar.objects.get(uid=info.id)
     return JsonResponse(
         {'result': ACCEPT, 'message': r'修改成功!', 'realname': scholar.realname, 'website': scholar.website,
-         'interest': scholar.interest, 'belong': scholar.belong})
+         'interest': scholar.interest, 'belong': scholar.belong, 'download': scholar.download})
 
 
 @csrf_exempt
