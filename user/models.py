@@ -18,3 +18,4 @@ class Scholar(models.Model):
     interest = models.CharField(max_length=50, null=True, blank=True)
     website = models.CharField(max_length=50, null=True, blank=True)
     introduction = models.TextField(null=True, blank=True)
+    download = models.IntegerField(default=0)
