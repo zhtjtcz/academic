@@ -10,5 +10,7 @@ urlpatterns = [
 	path('logout', logout),
 	path('set_scholar_info', set_scholar_info),
 	path('get_scholar_info', get_scholar_info),
-	path('change_password', change_password)
+	path('change_password', change_password),
+	path('set_info', set_info),
+	path('get_info', get_info)
 ]
