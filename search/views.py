@@ -15,5 +15,6 @@ def search(request):
 		title = data_json.get('title', "")
 		author = data_json.get('author', "")
 		abstract = data_json.get('abstract', "")
-		result = nomalSearch(title = title, author = author, abstract = abstract)
+		page = int(data_json.get('page', 1))
+		result = nomalSearch(title = title, author = author, abstract = abstract, page = page)
 		return JsonResponse({'result': ACCEPT, 'message': result})
