@@ -6,6 +6,36 @@ from academic.values import *
 搜索结果高亮 : 前端 
 '''
 
+def getCountData(field = "", string = "", bucket = ""):
+	mapping = {
+		"query": {
+			"match": {
+				field : {
+					"query": string,
+					"minimum_should_match": "75%"
+				}
+			}
+		},
+		"size": 0,
+		"aggs": {
+            "result": {
+            "terms": {
+                "field": bucket,
+                "size": 50,
+                "order": {
+                    "_count": "desc"
+                	}
+            	}
+        	}
+   		}
+	}
+	origin = ES.search(index='small', body=mapping)
+	data = origin["aggregations"]["result"]["buckets"]
+	result = [i for i in data if len(str(i['key'])) >= 3]
+	if len(result) > 10:
+		result = result[0:10]
+	return result
+
 def nomalSearch(title = "", author = "", abstract = "",
 				page = 1):
 	mapping = {
@@ -17,16 +47,22 @@ def nomalSearch(title = "", author = "", abstract = "",
 	}
 
 	if len(title) > 0:
+		field = "title"
+		string = title
 		mapping["query"]["match"]["title"] = {
 			"query": title,
 			"minimum_should_match": "75%"
 		}
 	elif len(author) > 0:
+		field = "author"
+		string = author
 		mapping["query"]["match"]["author"] = {
 			"query": author,
 			"minimum_should_match": "75%"
 		}
 	elif len(abstract) > 0:
+		field = "abstract"
+		string = abstract
 		mapping["query"]["match"]["abstract"] = {
 			"query": abstract,
 			"minimum_should_match": "75%"
@@ -43,4 +79,12 @@ def nomalSearch(title = "", author = "", abstract = "",
 		"total": count,
 		"pages": (count + PAGE - 1) // PAGE
 	}
+
+	if page == 1:
+		year_bucket = getCountData(field = field, string = string, bucket = "year")
+		author_bucket = getCountData(field = field, string = string, bucket = "author")
+		field_bucket = getCountData(field = field, string = string, bucket = "field")
+		result["year"] = year_bucket
+		result["author"] = author_bucket
+		result["field"] = field_bucket
 	return result
