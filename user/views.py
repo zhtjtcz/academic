@@ -14,7 +14,6 @@ from hashlib import md5
 import re
 
 def check_session(request):
-	return 1
 	id = request.session.get('user', 0)
 	return id
 
