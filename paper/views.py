@@ -3,6 +3,7 @@ from paper.models import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from academic.values import *
+from user.views import *
 import json
 import arxiv
 # Create your views here.
@@ -53,8 +54,9 @@ def claim_paper(request):
 @csrf_exempt
 def download(request):
 	if request.method == 'POST':
-		if request.session.get('user', -1) == -1:
-			return JsonResponse({'result': ERROR, 'message':r'请先登录！'})
+		id = check_session(request)
+		if id == 0:
+			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 		data_json = json.loads(request.body)
 		if data_json.get('title', -1) != -1:
 			title = data_json.get('title')
