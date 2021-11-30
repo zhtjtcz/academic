@@ -29,8 +29,10 @@ def test(request):
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
-        id = check_session(request)
-        if id > 0:
+        #id = check_session(request)
+        #if id > 0:
+        #    return JsonResponse({'result': ERROR, 'message': r'已登录!'})
+        if request.session.get('user', 0) != 0:
             return JsonResponse({'result': ERROR, 'message': r'已登录!'})
         data_json = json.loads(request.body)
         username = data_json['username']
