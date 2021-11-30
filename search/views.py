@@ -10,8 +10,10 @@ import json
 
 @csrf_exempt
 def search(request):
-    if request.method == 'POST':
-        data_json = json.loads(request.body)
-        title = data_json.get('title')
-        result = nomalSearch(title)
-        return JsonResponse({'result': ACCEPT, 'message': result})
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		title = data_json.get('title', "")
+		author = data_json.get('author', "")
+		abstract = data_json.get('abstract', "")
+		result = nomalSearch(title)
+		return JsonResponse({'result': ACCEPT, 'message': result})
