@@ -35,7 +35,7 @@ def test(request):
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
-        if request.session.get('is_login') is not True:
+        if request.session.get('is_login') is True:
             return JsonResponse({'result': ERROR, 'message': r'已登录!'})
         data_json = json.loads(request.body)
         username = data_json['username']
@@ -138,7 +138,6 @@ def get_scholar_info(request):
     if request.session.get('is_login') is not True:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
     id = request.session['user']
-    id = 1
     info = User.objects.get(id=id)
     if not info.scholar:
         return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
