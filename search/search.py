@@ -12,8 +12,8 @@ def nomalSearch(title = "", author = "", abstract = "",
 		"query": {
 			"match": {}
 		},
-		"from": 0,
-		"size": 10000
+		"from": PAGE*(page-1),
+		"size": PAGE*page-1
 	}
 
 	if len(title) > 0:
@@ -32,11 +32,15 @@ def nomalSearch(title = "", author = "", abstract = "",
 			"minimum_should_match": "75%"
 		}
 	origin = ES.search(index='small', body=mapping)
+	count_info = ES.count(index='small', body={"query" : mapping["query"]})
+	count = count_info['count']
+	
 	papers = origin["hits"]["hits"]
 	papers = [x["_source"] for x in papers]
+	
 	result = {
-		"paper": papers[PAGE*(page-1) : PAGE*page],			# devide by page
-		"total": len(papers),
-		"pages": (len(papers) + PAGE - 1) // PAGE
+		"paper": papers,			# devide by page
+		"total": count,
+		"pages": (count + PAGE - 1) // PAGE
 	}
 	return result
