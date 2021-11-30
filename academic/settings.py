@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 	'search',
 	'paper',
 	'corsheaders',
+	'message',
 	# 'captcha',
 	'drf_yasg2',
     'django.contrib.admin',
@@ -58,6 +59,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'
 
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
 CORS_ALLOW_ALL_ORIGINS = True
