@@ -196,7 +196,7 @@ def set_info(request):
     data_json = json.loads(request.body)
     info = User.objects.get(id=id)
     info.email = data_json['email']
-    info.gender = data_json['info']
+    info.gender = data_json['gender']
     info.area = data_json['area']
     info.phone = data_json['phone']
     info.save()
