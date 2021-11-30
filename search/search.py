@@ -2,8 +2,8 @@ from elasticsearch import Elasticsearch
 from academic.values import *
 
 '''
-需要支持的功能： 按标题等各个字段检索，多字段检索，搜索结果高亮
-TODO 结果高亮
+需要支持的功能： 按标题等各个字段检索，多字段检索
+搜索结果高亮 : 前端 
 '''
 def nomalSearch(title = "", author = "", abstract = ""):
 	mapping = {
