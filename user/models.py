@@ -7,6 +7,9 @@ class User(models.Model):
     username = models.CharField(max_length=20)
     password = models.CharField(max_length=50)
     email = models.EmailField()
+    gender = models.IntegerField(null=True, blank=True)
+    phone = models.CharField(max_length=30, null=True, blank=True)
+    area = models.CharField(max_length=100, null=True, blank=True)
     scholar = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
 

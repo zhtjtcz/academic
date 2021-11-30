@@ -180,7 +180,8 @@ def get_info(request):
     if not info.scholar:
         return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
     return JsonResponse(
-        {'result': ACCEPT, 'message': r'获取成功!', 'username': info.username, 'email': info.email})
+        {'result': ACCEPT, 'message': r'获取成功!', 'username': info.username, 'email': info.email, 'gender': info.gender,
+         'area': info.area, 'phone': info.phone})
 
 @csrf_exempt
 def set_info(request):
@@ -192,6 +193,9 @@ def set_info(request):
     data_json = json.loads(request.body)
     info = User.objects.get(id=id)
     info.email = data_json['email']
+    info.gender = data_json['info']
+    info.area = data_json['area']
+    info.phone = data_json['phone']
     info.save()
     return JsonResponse(
         {'result': ACCEPT, 'message': r'修改成功!'})
