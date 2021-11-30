@@ -13,16 +13,10 @@ import json
 from hashlib import md5
 import re
 
-'''
-@swagger_auto_schema(method='post',
-	                 tags=['用户登录注册相关'],
-                     operation_summary='登录',
-                     responses={200: '登录成功', 401: '用户重复登录', 402: '用户名不存在', 403: '密码错误', 404: '用户未经过邮箱确认', 405: '表单格式错误，即用户名或密码不符合规则'},
-                     manual_parameters=['A', 'B']
-                     )
-@api_view(['POST'])
-'''
-
+def check_session(request):
+	return 1
+	id = request.session.get('user', 0)
+	return id
 
 @csrf_exempt
 def test(request):
@@ -35,7 +29,8 @@ def test(request):
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
-        if request.session.get('is_login') is True:
+        id = check_session(request)
+        if id > 0:
             return JsonResponse({'result': ERROR, 'message': r'已登录!'})
         data_json = json.loads(request.body)
         username = data_json['username']
@@ -96,7 +91,7 @@ def set_introduction(request):
 @csrf_exempt
 def get_introduction(request):
     if request.method == 'POST':
-        if request.session.get('is_login') is not True:
+        if check_session(request) == 0:
             return JsonResponse({'result': ERROR, 'message': r'请先登录'})
         uid = request.session['user']
         scholar = Scholar.objects.get(uid=uid)
@@ -114,9 +109,9 @@ def get_introduction(request):
 def set_scholar_info(request):
     if request.method != 'POST':
         return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
-    if request.session.get('is_login') is not True:
+    id = check_session(request)
+    if id == 0:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-    id = request.session['user']
     info = User.objects.get(id=id)
     if not info.scholar:
         return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
@@ -135,9 +130,9 @@ def set_scholar_info(request):
 def get_scholar_info(request):
     if request.method != 'POST':
         return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
-    if request.session.get('is_login') is not True:
+    id = check_session(request)
+    if id == 0:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-    id = request.session['user']
     info = User.objects.get(id=id)
     if not info.scholar:
         return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
@@ -150,7 +145,9 @@ def get_scholar_info(request):
 def change_password(request):
 	if request.method != 'POST':
 		return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
-	# TODO session check
+	id = check_session(request)
+	if id == 0:
+		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 	data_json = json.loads(request.body)
 	password = str(data_json['password'])
 	newpassword1 = str(data_json['newpassword1'])
@@ -177,9 +174,9 @@ def change_password(request):
 def get_info(request):
     if request.method != 'POST':
         return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
-    if request.session.get('is_login') is not True:
+    id = check_session(request)
+    if id == 0:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-    id = request.session['user']
     info = User.objects.get(id=id)
     if not info.scholar:
         return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
@@ -190,10 +187,10 @@ def get_info(request):
 def set_info(request):
     if request.method != 'POST':
         return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
-    if request.session.get('is_login') is not True:
+    id = check_session(request)
+    if id == 0:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
     data_json = json.loads(request.body)
-    id = request.session['user']
     info = User.objects.get(id=id)
     info.email = data_json['email']
     info.save()
@@ -203,7 +200,8 @@ def set_info(request):
 
 @csrf_exempt
 def logout(request):
-    if request.session.get('is_login'):
+    id = check_session(request)
+    if id:
         request.session.flush()
         return JsonResponse({'result': ACCEPT, 'message': r'已登出!'})
     else:
