@@ -14,7 +14,6 @@ from hashlib import md5
 import re
 
 def check_session(request):
-	return 1
 	id = request.session.get('user', 0)
 	return id
 
@@ -206,8 +205,7 @@ def set_info(request):
 
 @csrf_exempt
 def logout(request):
-    id = check_session(request)
-    if id:
+    if request.session.get('user', -1) != -1:
         request.session.flush()
         return JsonResponse({'result': ACCEPT, 'message': r'已登出!'})
     else:
