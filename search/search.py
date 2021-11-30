@@ -15,6 +15,7 @@ def nomalSearch(title = "", author = "", abstract = ""):
 		"from": 0,
 		"size": 100,
 	}
+	print(abstract)
 	if len(title) > 0:
 		mapping["query"]["match"]["title"] = {
 			"query": title,
