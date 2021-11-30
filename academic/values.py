@@ -16,3 +16,8 @@ SALT4 = '7'
 ES = Elasticsearch(
 	hosts = '123.57.194.168:9200'
 )
+
+APPEAL_PAPER = 1
+APPEAL_IDENTITY = 2
+CLAIM_PAPER = 3
+FEEDBACK = 4
