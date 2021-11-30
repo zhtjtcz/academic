@@ -51,8 +51,6 @@ def login(request):
         request.session['is_login'] = True
         request.session['user'] = user.id
         return JsonResponse({'result': ACCEPT, 'message': r'登录成功!', 'scholar': user.scholar, 'admin': user.admin})
-    else:
-        print('IP is', request.META.get('HTTP_X_REAL_IP'))
 
 
 @csrf_exempt
