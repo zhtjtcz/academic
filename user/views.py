@@ -150,6 +150,32 @@ def get_scholar_info(request):
         {'result': ACCEPT, 'message': r'获取成功!', 'realname': scholar.realname, 'website': scholar.website,
          'interest': scholar.interest, 'belong': scholar.belong, 'download': scholar.download, 'cite':scholar.cite})
 
+@csrf_exempt
+def change_password(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
+	# TODO session check
+	data_json = json.loads(request.body)
+	password = str(data_json['password'])
+	newpassword1 = str(data_json['newpassword1'])
+	newpassword2 = str(data_json['newpassword2'])
+	id = request.session['user']
+	user = User.objects.get(id = id)
+	password = password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
+		password[-1:]
+	password = md5(password.encode("utf8")).hexdigest()
+	
+	if password != user.password:
+		return JsonResponse({'result': ERROR, 'message': r'密码错误'})
+	if newpassword1 != newpassword2:
+		return JsonResponse({'result': ERROR, 'message': r'两次密码不匹配！'})
+	password = newpassword1
+	password = password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
+		password[-1:]
+	password = md5(password.encode("utf8")).hexdigest()
+	user.password = password
+	user.save()
+	return JsonResponse({'result': ACCEPT, 'message': r'修改成功！'})
 
 @csrf_exempt
 def logout(request):
