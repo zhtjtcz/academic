@@ -35,8 +35,8 @@ def test(request):
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
-        # if request.session.get('is_login') is not True:
-        #     return JsonResponse({'result': ERROR, 'message': r'已登录!'})
+        if request.session.get('is_login') is not True:
+            return JsonResponse({'result': ERROR, 'message': r'已登录!'})
         data_json = json.loads(request.body)
         username = data_json['username']
         password = data_json['password']
