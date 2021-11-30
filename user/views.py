@@ -200,7 +200,8 @@ def set_info(request):
 
 @csrf_exempt
 def logout(request):
-    if request.session.get('is_login'):
+    id = check_session(request)
+    if id:
         request.session.flush()
         return JsonResponse({'result': ACCEPT, 'message': r'已登出!'})
     else:
