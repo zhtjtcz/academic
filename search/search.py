@@ -1,6 +1,7 @@
 from elasticsearch import Elasticsearch
 from academic.values import *
 from user.views import check_session
+from datetime import datetime, timedelta
 
 '''
 需要支持的功能： 按标题等各个字段检索，多字段检索
@@ -70,14 +71,6 @@ def nomalSearch(request = None,
 			"minimum_should_match": "75%"
 		}
 	
-	if check_session(request):
-		history = request.session.get('history', [])
-		history.append(string)
-		if len(history) > 5:
-			history.pop(0)
-		request.session['history'] = history
-		# Save the search history
-	
 	origin = ES.search(index='small', body=mapping)
 	count_info = ES.count(index='small', body={"query" : mapping["query"]})
 	count = count_info['count']
@@ -90,6 +83,20 @@ def nomalSearch(request = None,
 		"total": count,
 		"pages": (count + PAGE - 1) // PAGE
 	}
+
+	if check_session(request):
+		history = request.session.get('history', [])
+		history.append(
+			{
+				"field": field,
+				"string": string,
+				"time": str(datetime.now())[:19],
+			}
+		)
+		if len(history) > 5:
+			history.pop(0)
+		request.session['history'] = history
+		# Save the search history
 
 	if page == 1:
 		year_bucket = getCountData(field = field, string = string, bucket = "year")
