@@ -27,7 +27,8 @@ def test(request):
 @csrf_exempt
 def islogin(request):
 	if check_session(request) != 0:
-		return JsonResponse({'result': ACCEPT})
+		user = User.objects.get(id = check_session(request))
+		return JsonResponse({'result': ACCEPT, 'scholar': user.scholar})
 	else:
 		return JsonResponse({'result': ERROR})
 
