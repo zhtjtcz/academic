@@ -1,5 +1,6 @@
 from elasticsearch import Elasticsearch
 from academic.values import *
+from user.views import check_session
 
 '''
 需要支持的功能： 按标题等各个字段检索，多字段检索
@@ -36,7 +37,8 @@ def getCountData(field = "", string = "", bucket = ""):
 		result = result[0:10]
 	return result
 
-def nomalSearch(title = "", author = "", abstract = "",
+def nomalSearch(request = None,
+				title = "", author = "", abstract = "",
 				page = 1):
 	mapping = {
 		"query": {
@@ -67,6 +69,15 @@ def nomalSearch(title = "", author = "", abstract = "",
 			"query": abstract,
 			"minimum_should_match": "75%"
 		}
+	
+	if check_session(request):
+		history = request.session.get('history', [])
+		history.append(string)
+		if len(history) > 5:
+			history.pop(0)
+		request.session['history'] = history
+		# Save the search history
+	
 	origin = ES.search(index='small', body=mapping)
 	count_info = ES.count(index='small', body={"query" : mapping["query"]})
 	count = count_info['count']

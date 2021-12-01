@@ -60,8 +60,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_SAMESITE = 'None'
+LOCAL = False
+if platform.system()=='Windows':
+	LOCAL = True
+
+if LOCAL == False:
+	SESSION_COOKIE_SECURE = True
+	SESSION_COOKIE_SAMESITE = 'None'
 
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
 CORS_ALLOW_ALL_ORIGINS = True
