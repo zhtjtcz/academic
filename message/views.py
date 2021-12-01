@@ -93,4 +93,9 @@ def deal_claim(request):
 			user = User.objects.get(id = message.uid)
 			user.scholar = True
 			user.save()
+			paper = Paper.objects.get(id = message.pid)
+			scholar = Scholar.objects.get(uid = message.uid)
+			scholar.cite += paper.cite
+			scholar.save()
+
 	return JsonResponse({'result': ACCEPT, 'message': r'处理完毕！'})
