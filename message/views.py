@@ -90,4 +90,7 @@ def deal_claim(request):
 		if Claim.objects.filter(uid = message.uid, pid = message.pid).exists() == False:
 			claim = Claim(uid = message.uid, pid = message.pid)
 			claim.save()
+			user = User.objects.get(id = message.uid)
+			user.scholar = True
+			user.save()
 	return JsonResponse({'result': ACCEPT, 'message': r'处理完毕！'})
