@@ -75,4 +75,15 @@ def deal_claim(request):
 	user = User.objects.get(id = id)
 	if user.admin == False:
 		return JsonResponse({'result': ERROR, 'message': r'没有权限！'})
-	# TODO
+	data_json = json.loads(request.body)
+	id = int(data_json['id'])
+	result = int(data_json['result'])
+	message = Message.objects.get(id = id)
+	message.isdeal = True
+	message.isread = True
+	message.save()
+	if result == 1:
+		if Claim.objects.filter(uid = message.uid, pid = message.pid).exists() == False:
+			claim = Claim(uid = message.uid, pid = message.pid)
+			claim.save()
+	return JsonResponse({'result': ACCEPT, 'message': r'处理完毕！'})
