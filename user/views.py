@@ -63,7 +63,7 @@ def register(request):
         username = data_json['username']
         password = data_json['password']
         check_password = data_json['check_password']
-        email = data_json['email']
+        email = data_json.get('email', '')
         if User.objects.filter(username=username).exists():
             return JsonResponse({'result': ERROR, 'message': r'用户名已存在'})
         if not 1 <= len(str(username)) <= 32:
