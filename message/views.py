@@ -35,8 +35,10 @@ def get_messages(request):
 	origin = [x for x in Message.objects.filter(type = type)]
 	messages = []
 	for x in origin:
+		user = User.objects.get(id = x.uid)
 		messages.append({
 			"id": x.id,
+			"username": user.username,
 			"isdeal": x.isdeal,
 			"isread": x.isread,
 			"date": str(x.date)[:19]
