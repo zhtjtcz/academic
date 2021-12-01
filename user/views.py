@@ -24,6 +24,12 @@ def test(request):
     else:
         return JsonResponse({'result': ACCEPT, 'message': r'GET!'})
 
+@csrf_exempt
+def islogin(request):
+	if check_session(request) != 0:
+		return JsonResponse({'result': ACCEPT})
+	else:
+		return JsonResponse({'result': ERROR})
 
 @csrf_exempt
 def login(request):
