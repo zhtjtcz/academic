@@ -35,13 +35,11 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-	re_path(r'^doc(?P<format>\.json|\.yaml)$',schema_view.without_ui(cache_timeout=0), name='schema-json'),  #<-- 这里
-    path('doc/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),  #<-- 这里
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),  #<-- 这里
     path('admin/', admin.site.urls),
-	# path('captcha/', include('captcha.urls')),
 	path('user/', include(('user.urls', 'user'), namespace="user")),
 	path('search/', include(('search.urls', 'search'), namespace="search")),
 	path('paper/', include(('paper.urls', 'paper'), namespace="paper")),
+	path('message/', include(('message.urls', 'message'), namespace="message")),
+	# path('captcha/', include('captcha.urls')),
 	# url(r'^img/(?P<path>.*)$', static.serve, {'document_root': settings.MEDIA_ROOT}),
 ]

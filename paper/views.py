@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from academic.values import *
 from user.views import *
+from message.views import *
 import json
 import arxiv
 # Create your views here.
@@ -48,10 +49,11 @@ def claim_paper(request):
 		if Paper.objects.filter(title = paper['title']).exists() == False:
 			pid = create_paper(paper)
 		else:
-			pid = Paper.objects.get(title = paper['title'])
-		claim = Claim(uid = uid, pid = pid)
-		claim.save()
-		return JsonResponse({'result': ACCEPT, 'message': r'认领成功！'})
+			pid = Paper.objects.get(title = paper['title']).id
+		if Claim.objects.filter(uid = uid, pid = pid).exists() == True:
+			return JsonResponse({'result': ERROR, 'message': r'您已认领该论文！'})
+		create_message(CLAIM_PAPER, uid, pid)
+		return JsonResponse({'result': ACCEPT, 'message': r'认领申请已提交！'})
 
 @csrf_exempt
 def download(request):
