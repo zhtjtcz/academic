@@ -46,7 +46,7 @@ def nomalSearch(request = None,
 			"match": {}
 		},
 		"from": PAGE*(page-1),
-		"size": PAGE*page-1
+		"size": PAGE
 	}
 
 	if len(title) > 0:
