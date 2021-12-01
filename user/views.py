@@ -208,6 +208,27 @@ def set_info(request):
     return JsonResponse(
         {'result': ACCEPT, 'message': r'修改成功!'})
 
+@csrf_exempt
+def create_scholar_info(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
+	id = check_session(request)
+	if id == 0:
+		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+	data_json = json.loads(request.body)
+	realname = data_json.get('realname', "")
+	belong = data_json.get('belong', "")
+	interest = data_json.get('interest', "")
+	if Scholar.objects.filter(uid = id).exists() == False:
+		scholar = Scholar()
+		scholar.uid = id
+	else:
+		scholar = Scholar.objects.get(uid = id)
+	scholar.realname = realname
+	scholar.belong = belong
+	scholar.interest = interest
+	scholar.save()
+	return JsonResponse({'result': ACCEPT, 'message': r'设置成功！'})
 
 @csrf_exempt
 def logout(request):
