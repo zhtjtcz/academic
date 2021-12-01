@@ -45,14 +45,15 @@ def claim_paper(request):
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 		uid = request.session['user']
 		data_json = json.loads(request.body)
-		paper = data_json.get('paper', {})
-		if Paper.objects.filter(title = paper['title']).exists() == False:
-			pid = create_paper(paper)
-		else:
-			pid = Paper.objects.get(title = paper['title']).id
-		if Claim.objects.filter(uid = uid, pid = pid).exists() == True:
-			return JsonResponse({'result': ERROR, 'message': r'您已认领该论文！'})
-		create_message(CLAIM_PAPER, uid, pid)
+		papers = data_json.get('paper', [])
+		for paper in papers:
+			if Paper.objects.filter(title = paper['title']).exists() == False:
+				pid = create_paper(paper)
+			else:
+				pid = Paper.objects.get(title = paper['title']).id
+			if Claim.objects.filter(uid = uid, pid = pid).exists() == True:
+				return JsonResponse({'result': ERROR, 'message': r'您已认领该论文！'})
+			create_message(CLAIM_PAPER, uid, pid)
 		return JsonResponse({'result': ACCEPT, 'message': r'认领申请已提交！'})
 
 @csrf_exempt
