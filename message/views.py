@@ -79,6 +79,8 @@ def deal_claim(request):
 	id = int(data_json['id'])
 	result = int(data_json['result'])
 	message = Message.objects.get(id = id)
+	if message.isdeal == True:
+		return JsonResponse({'result': ACCEPT, 'message': r'已完成处理！'})
 	message.isdeal = True
 	message.isread = True
 	message.save()
