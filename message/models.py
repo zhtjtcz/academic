@@ -8,5 +8,6 @@ class Message(models.Model):
 	uid = models.IntegerField()
 	pid = models.IntegerField(null=True, blank=True, default = 0)
 	isread = models.BooleanField(default = False)
+	isdeal = models.BooleanField(default = False)
 	date = models.DateField()
 	content = models.TextField(null=True, blank=True, default = "")
