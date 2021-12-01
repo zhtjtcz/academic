@@ -40,7 +40,9 @@ def create_paper(info):
 @csrf_exempt
 def claim_paper(request):
 	if request.method == 'POST':
-		uid = request.session.get('user', -1)
+		if check_session(request) == 0:
+			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+		uid = request.session['user']
 		data_json = json.loads(request.body)
 		paper = data_json.get('paper', {})
 		if Paper.objects.filter(title = paper['title']).exists() == False:
