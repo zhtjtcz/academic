@@ -14,4 +14,5 @@ urlpatterns = [
 	path('set_info', set_info),
 	path('get_info', get_info),
 	path('islogin', islogin),
+	path('create_scholar_info', create_scholar_info),
 ]
