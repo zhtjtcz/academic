@@ -53,7 +53,7 @@ def claim_paper(request):
 				pid = Paper.objects.get(title = paper['title']).id
 			if Claim.objects.filter(uid = uid, pid = pid).exists() == True:
 				return JsonResponse({'result': ERROR, 'message': r'您已认领该论文！'})
-			create_message(CLAIM_PAPER, uid, pid)
+			create_message(CLAIM_PAPER, uid, pid, data_json.get('title', ''))
 		return JsonResponse({'result': ACCEPT, 'message': r'认领申请已提交！'})
 
 @csrf_exempt
