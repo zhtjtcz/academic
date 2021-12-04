@@ -65,18 +65,18 @@ def get_messages(request):
     for x in origin:
         user = User.objects.get(id=x.uid)
         messages.append({
-            "id": x.id,
-            "paper": Paper.objects.get(id=x.pid),
-            "username": user.username,
-            "isdeal": x.isdeal,
-            "date": str(x.date)[:19],
-            "uid": x.uid,
-            "pid": x.pid,
-            "content": x.content
-        }
+            'id': x.id,
+            'paper': x.title,
+            'username': user.username,
+            'isdeal': x.isdeal,
+            'date': str(x.date)[:19],
+            'uid': x.uid,
+            'pid': x.pid,
+            'content': x.content
+        	}
         )
         if x.type == CLAIM_PAPER:
-            messages[-1]["realname"] = Scholar.objects.get(uid=x.uid).realname
+            messages[-1]['realname'] = Scholar.objects.get(uid=x.uid).realname
     messages.sort(key=lambda x: -x["id"])
     return JsonResponse({'result': ACCEPT, 'message': '获取成功！', 'messages': messages})
 
