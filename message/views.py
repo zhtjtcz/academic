@@ -1,3 +1,6 @@
+import os
+
+from django import forms
 from django.shortcuts import render
 from message.models import Message
 from django.http import JsonResponse
@@ -155,3 +158,22 @@ def appeal_paper(request):
 		pid = int(data_json['pid'])
 		create_message(APPEAL_PAPER, uid, pid, data_json.get('title', ''))
 		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
+
+
+class UploadFileForm(forms.Form):
+    title = forms.CharField(max_length=50)
+    file = forms.FileField()
+
+
+@csrf_exempt
+def upload_file(request):
+    if request.method != 'POST':
+        return JsonResponse({'result': ERROR, 'message': r'????'})
+    file = request.FILES.get('file', None)
+    if not file:
+        return JsonResponse({'result': ERROR, 'message': r'上传失败！'})
+    destination = open(os.path.join(STORAGE_PATH, file.name), 'wb+')
+    for chunk in file.chunks():
+        destination.write(chunk)
+    destination.close()
+    return JsonResponse({'result': ACCEPT, 'message': r'上传成功! '})

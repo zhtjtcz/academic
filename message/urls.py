@@ -6,4 +6,5 @@ urlpatterns = [
 	path('get_message', get_message),
 	path('deal_claim', deal_claim),
 	path('feedback', feedback),
+	path('upload_file', upload_file)
 ]
