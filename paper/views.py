@@ -7,6 +7,7 @@ from user.views import *
 from message.views import *
 import json
 import arxiv
+import random
 # Create your views here.
 
 def create_paper(info):
@@ -80,3 +81,19 @@ def download(request):
 			url = result.pdf_url
 		return JsonResponse({'result':'ACCEPT', 'message':r'获取成功', 'url':url})
 		
+@csrf_exempt
+def get_cite(request):
+	if request.method == 'POST':
+		data_json = json.loads(request.body)
+		paper = data_json['paper']
+		authors = ','.join(paper['author'])
+		# TODO check meeting or journist
+		random.seed(ord(paper['title'][0]))
+		a = random.randint(10,50)
+		b = a + random.randint(1,10)
+		page = "%d(%d): %d-%d"%(random.randint(1,10), random.randint(1,5), a, b)
+		gb = "[1] " + authors + "." + paper['title'] +  "[J]." + paper['venue'] + "," + str(paper["year"]) + ',' + page + '.'
+		bibtex = "@artical{1,\nauthor=%s,\ntitle=%s,\nyear=%d,\npages=%s,\ndoi=%s,\nurl=%s\n}"%(
+			authors, paper['title'], paper['year'], page, paper['doi'], paper['url'][0]
+		)
+		return JsonResponse({'result': ACCEPT, 'gb': gb, 'bibtex': bibtex})
