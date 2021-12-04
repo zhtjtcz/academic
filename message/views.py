@@ -63,7 +63,7 @@ def get_messages(request):
         user = User.objects.get(id=x.uid)
         messages.append({
             "id": x.id,
-            "paper": x.title,
+            "paper": Paper.objects.get(id=x.pid),
             "username": user.username,
             "isdeal": x.isdeal,
             "date": str(x.date)[:19],
