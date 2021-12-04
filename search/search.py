@@ -40,13 +40,13 @@ def getCountData(field = "", string = "", bucket = ""):
 
 def nomalSearch(request = None,
 				title = "", author = "", abstract = "",
-				page = 1):
+				page = 1, limit = 20):
 	mapping = {
 		"query": {
 			"match": {}
 		},
-		"from": PAGE*(page-1),
-		"size": PAGE
+		"from": limit*(page-1),
+		"size": limit
 	}
 
 	if len(title) > 0:
@@ -81,7 +81,7 @@ def nomalSearch(request = None,
 	result = {
 		"paper": papers,			# devide by page
 		"total": count,
-		"pages": (count + PAGE - 1) // PAGE
+		"pages": (count + limit - 1) // limit
 	}
 
 	if check_session(request):
