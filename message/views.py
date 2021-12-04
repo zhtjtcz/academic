@@ -129,7 +129,7 @@ def deal_claim(request):
             scholar.cite += paper.cite
             scholar.save()
 
-	return JsonResponse({'result': ACCEPT, 'message': r'处理完毕！'})
+    return JsonResponse({'result': ACCEPT, 'message': r'处理完毕！'})
 
 @csrf_exempt
 def appeal_user(request):
