@@ -129,4 +129,27 @@ def deal_claim(request):
             scholar.cite += paper.cite
             scholar.save()
 
-    return JsonResponse({'result': ACCEPT, 'message': r'处理完毕！'})
+	return JsonResponse({'result': ACCEPT, 'message': r'处理完毕！'})
+
+@csrf_exempt
+def appeal_user(request):
+	if request.method == 'POST':
+		id = check_session(request)
+		if id == 0:
+			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+		data_json = json.loads(request.body)
+		uid = int(data_json['uid'])
+		create_message(APPEAL_IDENTITY, uid, 0)
+		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
+
+@csrf_exempt
+def appeal_paper(request):
+	if request.method == 'POST':
+		id = check_session(request)
+		if id == 0:
+			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+		data_json = json.loads(request.body)
+		uid = int(data_json['uid'])
+		pid = int(data_json['pid'])
+		create_message(APPEAL_PAPER, uid, pid)
+		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
