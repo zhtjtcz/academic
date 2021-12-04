@@ -94,6 +94,6 @@ def get_cite(request):
 		page = "%d(%d): %d-%d"%(random.randint(1,10), random.randint(1,5), a, b)
 		gb = "[1] " + authors + "." + paper['title'] +  "[J]." + paper['venue'] + "," + str(paper["year"]) + ',' + page + '.'
 		bibtex = "@artical{1,\nauthor=%s,\ntitle=%s,\nyear=%d,\npages=%s,\ndoi=%s,\nurl=%s\n}"%(
-			authors, paper['title'], paper['year'], page, paper['doi'], paper['url'][0]
+			authors, paper['title'], int(paper['year']), page, paper['doi'], paper['url'][0]
 		)
 		return JsonResponse({'result': ACCEPT, 'gb': gb, 'bibtex': bibtex})
