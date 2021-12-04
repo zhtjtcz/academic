@@ -72,6 +72,8 @@ def get_messages(request):
             "content": x.content
         }
         )
+        if x.type == CLAIM_PAPER:
+            messages[-1]['realname'] = Scholar.objects.get(id=x.uid).realname
     messages.sort(key=lambda x: -x["id"])
     return JsonResponse({'result': ACCEPT, 'message': '获取成功！', 'messages': messages})
 
