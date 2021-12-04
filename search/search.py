@@ -36,6 +36,8 @@ def getCountData(field = "", string = "", bucket = ""):
 	result = [i for i in data if len(str(i['key'])) >= 3]
 	if len(result) > 10:
 		result = result[0:10]
+	if bucket == "year":
+		result = [i for i in result if i['key']<=2021]
 	return result
 
 def nomalSearch(request = None,
