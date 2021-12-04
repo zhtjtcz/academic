@@ -27,14 +27,11 @@ def create_message(type, uid, pid, title, content=''):
         content = "用户 %s 申请认领文章 %s , 请及时处理" % (user.username, paper.title)
         message.content = content
     elif type == APPEAL_IDENTITY:
-        content = "用户 %s 认领的学者身份被举报, 请及时处理" % (user.username)
         message.content = content
     elif type == APPEAL_PAPER:
         paper = Paper.objects.get(id=pid)
-        content = "用户 %s 与文章 %s 的认领关系被举报, 请及时处理" % (user.username, paper.title)
         message.content = content
     elif type == FEEDBACK:
-        content = "用户 %s 提交了如下的反馈信息, 请及时处理: %s" % (user.username, content)
         message.content = content
     else:
         print("Fuck Frontend")
