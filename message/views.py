@@ -144,7 +144,7 @@ def appeal_user(request):
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 		data_json = json.loads(request.body)
 		uid = int(data_json['uid'])
-		create_message(APPEAL_IDENTITY, uid, 0, data_json.get('title', ''))
+		create_message(APPEAL_IDENTITY, uid, 0, data_json.get('title', ''), data_json.get('content', ''))
 		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
 
 @csrf_exempt
