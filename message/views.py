@@ -9,7 +9,7 @@ from message.models import *
 from paper.models import *
 # Create your views here.
 
-def create_message(type, uid, pid):
+def create_message(type, uid, pid, content = ''):
 	message = Message()
 	message.uid = uid
 	message.pid = pid
@@ -24,12 +24,26 @@ def create_message(type, uid, pid):
 		content = "用户 %s 认领的学者身份被举报, 请及时处理"%(user.username)
 		message.content = content
 	elif type == APPEAL_PAPER:
-		pass
+		paper = Paper.objects.get(id = pid)
+		content = "用户 %s 与文章 %s 的认领关系被举报, 请及时处理"%(user.username, paper.title)
+		message.content = content
 	elif type == FEEDBACK:
-		pass
+		content = "用户 %s 提交了如下的反馈信息, 请及时处理: %s"%(user.username, content)
+		message.content = content
 	else:
 		print("Fuck Frontend")
 	message.save()
+
+@csrf_exempt
+def feedback(request):
+	if request.method == 'POST':
+		id = check_session(request)
+		if id == 0:
+			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+		data_json = json.loads(request.body)
+		content = data_json.get('content', '')
+		create_message(FEEDBACK, id, 0, content)
+		return JsonResponse({'result': ACCEPT, 'message': r'反馈成功！'})
 
 @csrf_exempt
 def get_messages(request):
