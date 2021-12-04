@@ -46,7 +46,7 @@ def feedback(request):
             return JsonResponse({'result': ERROR, 'message': r'请先登录'})
         data_json = json.loads(request.body)
         content = data_json.get('content', '')
-        create_message(FEEDBACK, id, 0, data_json.get('paper'), content)
+        create_message(FEEDBACK, id, 0, data_json.get('title', ''), content)
         return JsonResponse({'result': ACCEPT, 'message': r'反馈成功！'})
 
 
@@ -141,7 +141,7 @@ def appeal_user(request):
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 		data_json = json.loads(request.body)
 		uid = int(data_json['uid'])
-		create_message(APPEAL_IDENTITY, uid, 0)
+		create_message(APPEAL_IDENTITY, uid, 0, data_json.get('title', ''))
 		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
 
 @csrf_exempt
@@ -153,5 +153,5 @@ def appeal_paper(request):
 		data_json = json.loads(request.body)
 		uid = int(data_json['uid'])
 		pid = int(data_json['pid'])
-		create_message(APPEAL_PAPER, uid, pid)
+		create_message(APPEAL_PAPER, uid, pid, data_json.get('title', ''))
 		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
