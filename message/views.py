@@ -46,7 +46,7 @@ def get_messages(request):
 			"id": x.id,
 			"username": user.username,
 			"isdeal": x.isdeal,
-			"date": str(x.date)[:19]
+			"date": str(x.date)[:19],
 			"uid": x.uid,
 			"pid": x.pid,
 			"content": x.content
