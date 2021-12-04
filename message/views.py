@@ -16,14 +16,20 @@ def create_message(type, uid, pid):
 	message.type = type
 	message.date = datetime.now()
 	user = User.objects.get(id = uid)
-	paper = Paper.objects.get(id = pid)
 	if type == CLAIM_PAPER:
+		paper = Paper.objects.get(id = pid)
 		content = "用户 %s 申请认领文章 %s , 请及时处理"%(user.username, paper.title)
 		message.content = content
-		message.save()
-	else:
+	elif type == APPEAL_IDENTITY:
+		content = "用户 %s 认领的学者身份被举报, 请及时处理"%(user.username)
+		message.content = content
+	elif type == APPEAL_PAPER:
 		pass
-		# TODO add more type
+	elif type == FEEDBACK:
+		pass
+	else:
+		print("Fuck Frontend")
+	message.save()
 
 @csrf_exempt
 def get_messages(request):
@@ -40,8 +46,10 @@ def get_messages(request):
 			"id": x.id,
 			"username": user.username,
 			"isdeal": x.isdeal,
-			"isread": x.isread,
 			"date": str(x.date)[:19]
+			"uid": x.uid,
+			"pid": x.pid,
+			"content": x.content
 		}
 	)
 	messages.sort(key = lambda x: -x["id"])
