@@ -12,4 +12,4 @@ jobs:
       - name: pull and reload
         run: sshpass -p ${{secrets.ECS_PASSWORD}} ssh -o StrictHostKeyChecking=no root@${{secrets.ECS_IP}} "cd ~/academic; python kill.py; git pull --force; git checkout master; python run.py;"
       - name: pull and reload on huawei
-        run: sshpass -p ${{secrets.ECS2_PASSWORD}} ssh -o StrictHostKeyChecking=no root@${{secrets.ECS2_IP}} "cd ~/academic; python kill.py; cd ..; sudo rm -rf academic; git clone git@github.com:zhtjtcz/academic.git; cd ~/academic; python run2.py;"
+        run: sshpass -p ${{secrets.ECS2_PASSWORD}} ssh -o StrictHostKeyChecking=no root@${{secrets.ECS2_IP}} "cd ~/academic; python3 kill.py; cd ..; sudo rm -rf academic; git clone git@github.com:zhtjtcz/academic.git; cd ~/academic; python3 run2.py;"
