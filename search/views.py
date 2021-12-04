@@ -16,7 +16,8 @@ def search(request):
 		author = data_json.get('author', "")
 		abstract = data_json.get('abstract', "")
 		page = int(data_json.get('page', 1))
-		result = nomalSearch(request = request, title = title, author = author, abstract = abstract, page = page)
+		limit = int(data_json.get('limit', 20))
+		result = nomalSearch(request = request, title = title, author = author, abstract = abstract, page = page, limit = limit)
 		return JsonResponse({'result': ACCEPT, 'message': result})
 
 @csrf_exempt
