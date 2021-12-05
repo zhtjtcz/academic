@@ -40,6 +40,7 @@ urlpatterns = [
 	path('search/', include(('search.urls', 'search'), namespace="search")),
 	path('paper/', include(('paper.urls', 'paper'), namespace="paper")),
 	path('message/', include(('message.urls', 'message'), namespace="message")),
+	path('myredis/', include(('myredis.urls', 'myredis'), namespace="myredis")),
 	# path('captcha/', include('captcha.urls')),
 	# url(r'^img/(?P<path>.*)$', static.serve, {'document_root': settings.MEDIA_ROOT}),
 ]
