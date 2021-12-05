@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 	'paper',
 	'corsheaders',
 	'message',
+	'myredis',
 	# 'captcha',
 	'drf_yasg2',
     'django.contrib.admin',
@@ -119,6 +120,21 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'academic.wsgi.application'
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+REDIS_TIMEOUT=7*24*60*60
+CUBES_REDIS_TIMEOUT=60*60
+NEVER_REDIS_TIMEOUT=365*24*60*60
+# Redis settings
 
 YAMLFILE = open("config.yaml", "r")
 YAMLINFO = yaml.load(YAMLFILE.read(), Loader=yaml.FullLoader)
