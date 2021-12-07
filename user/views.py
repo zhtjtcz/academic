@@ -256,9 +256,9 @@ def set_profile(request):
     if not file:
         return JsonResponse({'result': ERROR, 'message': r'设置失败！'})
     filename, type = os.path.splitext(file.name)
-    if type != 'jpg' and type != 'png':
+    if type != '.jpg' and type != '.png':
         return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
-    profile = str(id) + '_' + str(random.Random(time.localtime()).randint(0, 1000)) + '.' + type
+    profile = str(id) + '_' + str(random.Random(time.localtime()).randint(0, 1000)) + type
     user = User.objects.get(id=id)
     user.profile = profile
     user.save()
