@@ -297,4 +297,4 @@ def get_profile(request):
         imagepath = os.path.join(MEDIA_ROOT, 'default_profile.png').replace('\\', '/')  # 图片路径
         with open(imagepath, 'rb') as f:
             image_data = f.read()
-        return HttpResponse(image_data,  content_type="image/"+os.path.splitext(file_name)[1])
+        return HttpResponse(image_data,  content_type="image/png")
