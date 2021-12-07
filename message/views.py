@@ -2,6 +2,8 @@ import os
 
 from django import forms
 from django.shortcuts import render
+
+from academic.settings import MEDIA_ROOT
 from message.models import Message
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -61,6 +63,9 @@ def get_messages(request):
     messages = []
     for x in origin:
         user = User.objects.get(id=x.uid)
+        realname = ''
+        if x.type == APPEAL_IDENTITY:
+            realname = Scholar.objects.get(uid=x.uid).realname
         messages.append({
             'id': x.id,
             'paper': x.title,
@@ -69,7 +74,8 @@ def get_messages(request):
             'date': str(x.date)[:19],
             'uid': x.uid,
             'pid': x.pid,
-            'content': x.content
+            'content': x.content,
+            'realname': realname
         	}
         )
         if x.type == CLAIM_PAPER:
@@ -169,7 +175,7 @@ def upload_file(request):
     file = request.FILES.get('file', None)
     if not file:
         return JsonResponse({'result': ERROR, 'message': r'上传失败！'})
-    destination = open(os.path.join(STORAGE_PATH, file.name), 'wb+')
+    destination = open(os.path.join(MEDIA_ROOT, file.name), 'wb')
     for chunk in file.chunks():
         destination.write(chunk)
     destination.close()
