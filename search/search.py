@@ -2,11 +2,16 @@ from elasticsearch import Elasticsearch
 from academic.values import *
 from user.views import check_session
 from datetime import datetime, timedelta
+from academic.settings import Redis
 
 '''
-需要支持的功能： 按标题等各个字段检索，多字段检索
-搜索结果高亮 : 前端 
+需要支持的功能：多字段检索
 '''
+
+def update_hot(bucket, result):
+	for i in result:
+		Redis.zincrby(name = bucket, value = i['key'], amount = i['doc_count'])
+	# Update the hot in the redis
 
 def getCountData(field = "", string = "", bucket = ""):
 	mapping = {
@@ -38,6 +43,8 @@ def getCountData(field = "", string = "", bucket = ""):
 		result = result[0:10]
 	if bucket == "year":
 		result = [i for i in result if i['key']<=2021]
+	if bucket != "year":
+		update_hot(bucket, result)
 	return result
 
 def nomalSearch(request = None,

@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import yaml
 import platform
+import redis
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -198,6 +199,7 @@ if platform.system() == "Windows":
 else:
 	IMG_URL = "123.57.194.168:8000/"
 
+Redis = redis.Redis(host='127.0.0.1', port=6379, decode_responses=True)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
