@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 from academic.settings import MEDIA_ROOT
 from message.models import Message
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
 from academic.values import *
 from user.views import *
@@ -180,3 +180,9 @@ def upload_file(request):
         for chunk in file.chunks():
             destination.write(chunk)
     return JsonResponse({'result': ACCEPT, 'message': r'上传成功! '})
+
+@csrf_exempt
+def download_file(request):
+    if request.method != 'POST':
+        return JsonResponse({'result': ERROR, 'message': r'????'})
+

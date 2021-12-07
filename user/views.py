@@ -1,7 +1,10 @@
+import os
+
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
 # from captcha.models import CaptchaStore
+from academic.settings import MEDIA_ROOT
 from academic.values import *
 from rest_framework import permissions
 from drf_yasg import openapi
@@ -238,3 +241,29 @@ def logout(request):
         return JsonResponse({'result': ACCEPT, 'message': r'已登出!'})
     else:
         return JsonResponse({'result': ERROR, 'message': r'请先登录!'})
+
+@csrf_exempt
+def set_profile(request):
+    if request.method != 'POST':
+        return JsonResponse({'result': ERROR, 'message': r'????'})
+    file = request.FILES.get('file', None)
+    # name = request.POST.get('name')
+    if not file:
+        return JsonResponse({'result': ERROR, 'message': r'设置失败！'})
+    with open(os.path.join(MEDIA_ROOT, request.session.get("id")).replace('\\', '/')+"_profile") as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
+    return JsonResponse({'result': ACCEPT, 'message': r'设置成功! '})
+
+
+@csrf_exempt
+def get_profile(request):
+    if request.method != 'POST':
+        return JsonResponse({'result': ERROR, 'message': r'????'})
+    try:
+        file = open(os.path.join(MEDIA_ROOT, request.session.get("id")).replace('\\', '/')+"_profile", 'wb')
+        response = FileResponse(file)
+        return response
+    except FileNotFoundError:
+        pass
+

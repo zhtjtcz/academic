@@ -13,6 +13,8 @@ urlpatterns = [
 	path('change_password', change_password),
 	path('set_info', set_info),
 	path('get_info', get_info),
+	path('set_profile', set_profile),
+	path('get_profile', get_profile),
 	path('islogin', islogin),
 	path('create_scholar_info', create_scholar_info),
 ]
