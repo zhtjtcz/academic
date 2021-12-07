@@ -153,3 +153,9 @@ def favor(request):
 	paper_id = create_paper(paper)
 	Favor.objects.create(uid=id, pid=paper_id).save()
 	return JsonResponse({'result': ACCEPT, 'message': r'收藏成功！'})
+
+
+# TODO
+@csrf_exempt
+def get_favor_list(request):
+	pass
