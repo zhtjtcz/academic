@@ -253,7 +253,10 @@ def set_profile(request):
     # name = request.POST.get('name')
     if not file:
         return JsonResponse({'result': ERROR, 'message': r'设置失败！'})
-    with open(os.path.join(MEDIA_ROOT, str(request.session.get("id"))+"_profile").replace('\\', '/')) as destination:
+    filename, type = os.path.splitext(file.name)
+    if type != 'jpg' and type != 'png':
+        return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
+    with open(os.path.join(MEDIA_ROOT, str(request.session.get("id"))+"_profile."+type).replace('\\', '/')) as destination:
         for chunk in file.chunks():
             destination.write(chunk)
     return JsonResponse({'result': ACCEPT, 'message': r'设置成功! '})
@@ -267,9 +270,11 @@ def get_profile(request):
     if id == 0:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
     try:
-        file = open(os.path.join(MEDIA_ROOT, str(request.session.get("id"))+"_profile").replace('\\', '/'), 'wb')
+        file = open(os.path.join(MEDIA_ROOT, str(request.session.get("id"))+"_profile.jpg").replace('\\', '/'), 'wb')
         response = FileResponse(file)
         return response
     except FileNotFoundError:
-        pass
+        file = open(os.path.join(MEDIA_ROOT, str(request.session.get("id")) + "_profile.png").replace('\\', '/'), 'wb')
+        response = FileResponse(file)
+        return response
 
