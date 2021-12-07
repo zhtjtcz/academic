@@ -173,9 +173,10 @@ def upload_file(request):
     if request.method != 'POST':
         return JsonResponse({'result': ERROR, 'message': r'????'})
     file = request.FILES.get('file', None)
+    name = request.POST.get('name')
     if not file:
         return JsonResponse({'result': ERROR, 'message': r'上传失败！'})
-    with open(os.path.join(MEDIA_ROOT, file.name).replace('\\', '/'), 'wb') as destination:
+    with open(os.path.join(MEDIA_ROOT, name).replace('\\', '/'), 'wb') as destination:
         for chunk in file.chunks():
             destination.write(chunk)
     return JsonResponse({'result': ACCEPT, 'message': r'上传成功! '})
