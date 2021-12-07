@@ -8,7 +8,9 @@ from message.models import Message
 from django.http import JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
 from academic.values import *
-from user.views import *
+from user.models import *
+import json
+from academic.tools import check_session
 from datetime import datetime
 from message.models import *
 from paper.models import *
