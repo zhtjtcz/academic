@@ -250,7 +250,7 @@ def set_profile(request):
     # name = request.POST.get('name')
     if not file:
         return JsonResponse({'result': ERROR, 'message': r'设置失败！'})
-    with open(os.path.join(MEDIA_ROOT, request.session.get("id")).replace('\\', '/')+"_profile") as destination:
+    with open(os.path.join(MEDIA_ROOT, str(request.session.get("id"))+"_profile").replace('\\', '/')) as destination:
         for chunk in file.chunks():
             destination.write(chunk)
     return JsonResponse({'result': ACCEPT, 'message': r'设置成功! '})
@@ -261,7 +261,7 @@ def get_profile(request):
     if request.method != 'POST':
         return JsonResponse({'result': ERROR, 'message': r'????'})
     try:
-        file = open(os.path.join(MEDIA_ROOT, request.session.get("id")).replace('\\', '/')+"_profile", 'wb')
+        file = open(os.path.join(MEDIA_ROOT, str(request.session.get("id"))+"_profile").replace('\\', '/'), 'wb')
         response = FileResponse(file)
         return response
     except FileNotFoundError:
