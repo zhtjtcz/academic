@@ -274,7 +274,12 @@ def get_profile(request):
         response = FileResponse(file)
         return response
     except FileNotFoundError:
-        file = open(os.path.join(MEDIA_ROOT, str(request.session.get("id")) + "_profile.png").replace('\\', '/'), 'wb')
-        response = FileResponse(file)
-        return response
+        try:
+            file = open(os.path.join(MEDIA_ROOT, str(request.session.get("id")) + "_profile.png").replace('\\', '/'), 'wb')
+            response = FileResponse(file)
+            return response
+        except FileNotFoundError:
+            file = open(os.path.join(MEDIA_ROOT, "default_profile.png").replace('\\', '/'), 'wb')
+            response = FileResponse(file)
+            return response
 
