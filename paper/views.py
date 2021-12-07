@@ -12,6 +12,10 @@ from academic.settings import Redis
 # Create your views here.
 
 def create_paper(info):
+	if Paper.objects.filter(title = info['title']).exists() == True:
+		paper = Paper.objects.get(title = info['title'])
+		return paper.id
+	
 	paper = Paper(title = info['title'])
 	if info.get('year', '') != '':
 		paper.year = info['year']
