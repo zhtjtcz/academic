@@ -175,7 +175,7 @@ def upload_file(request):
     file = request.FILES.get('file', None)
     if not file:
         return JsonResponse({'result': ERROR, 'message': r'上传失败！'})
-    destination = open(os.path.join(MEDIA_ROOT, file.name), 'wb+')
+    destination = open(os.path.join(MEDIA_ROOT, file.name), 'wb')
     for chunk in file.chunks():
         destination.write(chunk)
     destination.close()
