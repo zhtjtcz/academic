@@ -8,6 +8,7 @@ from message.views import *
 import json
 import arxiv
 import random
+from academic.settings import Redis
 # Create your views here.
 
 def create_paper(info):
@@ -97,3 +98,9 @@ def get_cite(request):
 			authors, paper['title'], int(paper['year']), page, paper['doi'], paper['url'][0]
 		)
 		return JsonResponse({'result': ACCEPT, 'gb': gb, 'bibtex': bibtex})
+
+@csrf_exempt
+def get_hot_field(request):
+	result = Redis.zrevrange(name = "field", start = 1, end = 10, withscores = True, score_cast_func = float)
+	result = [{i[0]:i[1]} for i in result]
+	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'hot': result})
