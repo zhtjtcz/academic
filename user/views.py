@@ -12,6 +12,8 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view
 # Create your views here.
 from user.models import *
+from paper.models import *
+from paper.views import get_papers
 import json
 from hashlib import md5
 import re
@@ -133,24 +135,38 @@ def set_scholar_info(request):
     scholar.interest = data_json['interest']
     scholar.belong = data_json['belong']
     scholar.save()
-    return JsonResponse(
-        {'result': ACCEPT, 'message': r'修改成功!'})
+    return JsonResponse({'result': ACCEPT, 'message': r'修改成功!'})
 
 
 @csrf_exempt
 def get_scholar_info(request):
-    if request.method != 'POST':
-        return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
-    id = check_session(request)
-    if id == 0:
-        return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-    info = User.objects.get(id=id)
-    if not info.scholar:
-        return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
-    scholar = Scholar.objects.get(uid=info.id)
-    return JsonResponse(
-        {'result': ACCEPT, 'message': r'获取成功!', 'realname': scholar.realname, 'website': scholar.website,
-         'interest': scholar.interest, 'belong': scholar.belong, 'download': scholar.download, 'cite':scholar.cite})
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
+	id = check_session(request)
+	if id == 0:
+		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+	
+	data_json = json.loads(request.body)
+	author = data_json['author']
+	if Scholar.objects.filter(realname__icontains = author).exists() == False:
+		return JsonResponse({'result': ERROR, 'message': 'error!'})
+	scholar = Scholar.objects.get(realname__icontains = author)
+	papers = []
+	if Claim.objects.filter(uid = scholar.uid).exists() == True:
+		origin = [x for x in Claim.objects.filter(uid = scholar.uid)]
+		papers = get_papers(origin)
+	
+	return JsonResponse({'name': scholar.realname, 'cite': scholar.cite, 'belong': scholar.belong, 'interest': scholar.interest,
+						'website': scholar.website, 'papers': papers})
+	
+	info = User.objects.get(id = id)
+	if not info.scholar:
+		return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
+	scholar = Scholar.objects.get(uid=info.id)
+
+	return JsonResponse(
+		{'result': ACCEPT, 'message': r'获取成功!', 'realname': scholar.realname, 'website': scholar.website,
+		 'interest': scholar.interest, 'belong': scholar.belong, 'download': scholar.download, 'cite':scholar.cite})
 
 @csrf_exempt
 def change_password(request):
