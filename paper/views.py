@@ -3,8 +3,8 @@ from paper.models import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from academic.values import *
-from user.views import *
 from message.views import *
+from academic.tools import check_session
 import json
 import arxiv
 import random
