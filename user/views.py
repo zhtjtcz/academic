@@ -273,7 +273,7 @@ def set_profile(request):
     user = User.objects.get(id=id)
     user.profile = profile
     user.save()
-    with open(os.path.join(MEDIA_ROOT, profile).replace('\\', '/')) as destination:
+    with open(os.path.join(MEDIA_ROOT, profile).replace('\\', '/'), "wb") as destination:
         for chunk in file.chunks():
             destination.write(chunk)
     return JsonResponse({'result': ACCEPT, 'message': r'设置成功! '})
