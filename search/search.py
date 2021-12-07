@@ -36,7 +36,7 @@ def getCountData(field = "", string = "", bucket = ""):
         	}
    		}
 	}
-	origin = ES.search(index='small', body=mapping)
+	origin = ES.search(index='marvolo', body=mapping)
 	data = origin["aggregations"]["result"]["buckets"]
 	result = [i for i in data if len(str(i['key'])) >= 3]
 	if len(result) > 10:
@@ -89,8 +89,8 @@ def nomalSearch(request = None,
 			"minimum_should_match": "75%"
 		}
 	
-	origin = ES.search(index='small', body=mapping)
-	count_info = ES.count(index='small', body={"query" : mapping["query"]})
+	origin = ES.search(index='marvolo', body=mapping)
+	count_info = ES.count(index='marvolo', body={"query" : mapping["query"]})
 	count = count_info['count']
 	
 	papers = origin["hits"]["hits"]
@@ -118,7 +118,7 @@ def nomalSearch(request = None,
 
 	if page == 1:
 		year_bucket = getCountData(field = field, string = string, bucket = "year")
-		author_bucket = getCountData(field = field, string = string, bucket = "author")
+		author_bucket = getCountData(field = field, string = string, bucket = "author.raw")
 		field_bucket = getCountData(field = field, string = string, bucket = "field")
 		result["year"] = year_bucket
 		result["author"] = author_bucket

@@ -169,4 +169,24 @@ def get_comments(request):
 
 @csrf_exempt
 def comment(request):
-	pass
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'错误'})
+	id = check_session(request)
+	if id == 0:
+		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+	data_json = json.loads(request.body)
+	paper = data_json.get('paper', {})
+	pid = create_paper(paper)
+	
+	comment = Comment(
+		uid = id,
+		pid = pid,
+		time = str(datetime()),
+		comment = data_json.get('comment', ''),
+		reply = data_json.get('reply', 0),
+		replyuid = data_json.get('replyuid', 0),
+		replyname = data_json.get('replyname', '')
+	)
+	comment.save()
+
+	data_json = json.loads(request.body)
