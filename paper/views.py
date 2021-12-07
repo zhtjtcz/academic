@@ -97,7 +97,7 @@ def get_cite(request):
 		bibtex = "@artical{1,\nauthor=%s,\ntitle=%s,\nyear=%d,\npages=%s,\ndoi=%s,\nurl=%s\n}"%(
 			authors, paper['title'], int(paper['year']), page, paper['doi'], paper['url'][0]
 		)
-		return JsonResponse({'result': ACCEPT, 'gb': gb, 'bibtex': bibtex})
+		return JsonResponse({'result': ACCEPT, 'gb': gb, 'bibtex': bibtex, 'paper':paper})
 
 @csrf_exempt
 def get_hot_field(request):
