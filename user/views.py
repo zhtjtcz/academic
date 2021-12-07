@@ -151,24 +151,22 @@ def get_scholar_info(request):
 	data_json = json.loads(request.body)
 	author = data_json['author']
 	if Scholar.objects.filter(realname__icontains = author).exists() == False:
-		return JsonResponse({'result': ERROR, 'message': 'error!'})
+		return JsonResponse({'result': ERROR, 'message': '还未认证!'})
 	scholar = Scholar.objects.get(realname__icontains = author)
 	papers = []
 	if Claim.objects.filter(uid = scholar.uid).exists() == True:
 		origin = [x for x in Claim.objects.filter(uid = scholar.uid)]
 		papers = get_papers(origin)
 	
-	return JsonResponse({'name': scholar.realname, 'cite': scholar.cite, 'belong': scholar.belong, 'interest': scholar.interest,
-						'website': scholar.website, 'papers': papers})
-	
-	info = User.objects.get(id = id)
-	if not info.scholar:
-		return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
-	scholar = Scholar.objects.get(uid=info.id)
+	dic = {}
+	for i in papers:
+		if i['year'] in dic:
+			dic[i['year']] += 1
+		else:
+			dic[i['year']] = 1
 
-	return JsonResponse(
-		{'result': ACCEPT, 'message': r'获取成功!', 'realname': scholar.realname, 'website': scholar.website,
-		 'interest': scholar.interest, 'belong': scholar.belong, 'download': scholar.download, 'cite':scholar.cite})
+	return JsonResponse({'name': scholar.realname, 'cite': scholar.cite, 'belong': scholar.belong, 'interest': scholar.interest,
+						'website': scholar.website, 'papers': papers, 'year': dic})
 
 @csrf_exempt
 def change_password(request):
