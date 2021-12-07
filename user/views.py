@@ -13,14 +13,11 @@ from rest_framework.decorators import api_view
 # Create your views here.
 from user.models import *
 from paper.models import *
+from academic.tools import check_session
 from paper.views import get_papers
 import json
 from hashlib import md5
 import re
-
-def check_session(request):
-	id = request.session.get('user', 0)
-	return id
 
 @csrf_exempt
 def test(request):
