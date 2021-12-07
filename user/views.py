@@ -286,13 +286,15 @@ def get_profile(request):
     #     response = FileResponse(file)
     #     response['Content-Type'] = 'image/' + os.path.splitext(filename)[1]
     #     return response
+    data = request.GET
+    file_name = data.get("img_name")
+    imagepath = os.path.join(MEDIA_ROOT, file_name).replace('\\', '/')  # 图片路径
     try:
-        data = request.GET
-        file_name = data.get("img_name")
-        imagepath = os.path.join(MEDIA_ROOT, file_name).replace('\\', '/')  # 图片路径
         with open(imagepath, 'rb') as f:
             image_data = f.read()
-        return HttpResponse(image_data, content_type="image/png")
+        return HttpResponse(image_data, content_type="image/"+os.path.splitext(file_name)[1])
     except Exception as e:
-        print(e)
-        return HttpResponse(str(e))
+        imagepath = os.path.join(MEDIA_ROOT, 'default_profile.png').replace('\\', '/')  # 图片路径
+        with open(imagepath, 'rb') as f:
+            image_data = f.read()
+        return HttpResponse(image_data,  content_type="image/"+os.path.splitext(file_name)[1])
