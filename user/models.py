@@ -12,6 +12,7 @@ class User(models.Model):
     area = models.CharField(max_length=100, null=True, blank=True)
     scholar = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
+    profile = models.CharField(max_length=50, default='default_profile.png')
 
 
 class Scholar(models.Model):
