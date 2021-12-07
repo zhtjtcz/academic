@@ -32,3 +32,13 @@ class Claim(models.Model):
 class Favor(models.Model):
     uid = models.IntegerField()
     pid = models.IntegerField()
+
+class Comment(models.Model):
+	id = models.AutoField(primary_key=True)
+	pid = models.IntegerField()
+	uid = models.IntegerField()
+	time = models.CharField(max_length = 50)
+	comment = models.TextField(null=True, blank=True)
+	reply = models.IntegerField()
+	replyuid = models.IntegerField(null=True, blank=True, default=0)
+	replyname = models.CharField(max_length = 50, null=True, blank=True, default='')
