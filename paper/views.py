@@ -12,11 +12,11 @@ from academic.settings import Redis
 # Create your views here.
 
 def create_paper(info):
-	if Paper.objects.filter(title = info['title']).exists() == True:
-		paper = Paper.objects.get(title = info['title'])
+	if Paper.objects.filter(id = int(info['id'])).exists() == True:
+		paper = Paper.objects.get(id = int(info['id']))
 		return paper.id
 	
-	paper = Paper(title = info['title'])
+	paper = Paper(id = int(info['id']), title = info['title'])
 	if info.get('year', '') != '':
 		paper.year = info['year']
 	if info.get('cite', '') != '':
@@ -53,10 +53,10 @@ def claim_paper(request):
 		data_json = json.loads(request.body)
 		papers = data_json.get('paper', [])
 		for paper in papers:
-			if Paper.objects.filter(title = paper['title']).exists() == False:
+			if Paper.objects.filter(id = int(paper['id'])).exists() == False:
 				pid = create_paper(paper)
 			else:
-				pid = Paper.objects.get(title = paper['title']).id
+				pid = Paper.objects.get(id = int(paper['id'])).id
 			if Claim.objects.filter(uid = uid, pid = pid).exists() == True:
 				return JsonResponse({'result': ERROR, 'message': r'您已认领该论文！'})
 			create_message(CLAIM_PAPER, uid, pid, paper['title'])
@@ -112,6 +112,7 @@ def get_hot_field(request):
 def get_paper(id):
 	x = Paper.objects.get(id = id)
 	dic = {
+		'id': x.id,
 		'year': x.year,
 		'cite': x.cite,
 		'url': list(x.url.split(MAGIC)),
@@ -168,5 +169,4 @@ def get_comments(request):
 
 @csrf_exempt
 def comment(request):
-	
 	pass
