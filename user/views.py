@@ -58,7 +58,7 @@ def login(request):
             return JsonResponse({'result': ERROR, 'message': r'密码错误'})
         request.session['is_login'] = True
         request.session['user'] = user.id
-        return JsonResponse({'result': ACCEPT, 'message': r'登录成功!', 'scholar': user.scholar, 'admin': user.admin, 'profile': user.profile})
+        return JsonResponse({'result': ACCEPT, 'message': r'登录成功!', 'scholar': user.scholar, 'admin': user.admin, 'id': user.id})
 
 
 @csrf_exempt
