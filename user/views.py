@@ -3,7 +3,7 @@ import random
 import time
 
 from django.shortcuts import render
-from django.http import JsonResponse, FileResponse
+from django.http import JsonResponse, FileResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 # from captcha.models import CaptchaStore
 from academic.settings import MEDIA_ROOT
@@ -275,15 +275,24 @@ def get_profile(request):
     # id = check_session(request)
     # if id == 0:
     #     return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-    filename = request.GET.get('img_name')
+    # filename = request.GET.get('img_name')
+    # try:
+    #     file = open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), 'wb')
+    #     response = FileResponse(file)
+    #     response['Content-Type'] = 'image/' + os.path.splitext(filename)[1]
+    #     return response
+    # except FileNotFoundError:
+    #     file = open(os.path.join(MEDIA_ROOT, "default_profile.png").replace('\\', '/'), 'wb')
+    #     response = FileResponse(file)
+    #     response['Content-Type'] = 'image/' + os.path.splitext(filename)[1]
+    #     return response
     try:
-        file = open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), 'wb')
-        response = FileResponse(file)
-        response['Content-Type'] = 'image/' + os.path.splitext(filename)[1]
-        return response
-    except FileNotFoundError:
-        file = open(os.path.join(MEDIA_ROOT, "default_profile.png").replace('\\', '/'), 'wb')
-        response = FileResponse(file)
-        response['Content-Type'] = 'image/' + os.path.splitext(filename)[1]
-        return response
-
+        data = request.GET
+        file_name = data.get("img_name")
+        imagepath = os.path.join(MEDIA_ROOT, file_name).replace('\\', '/')  # 图片路径
+        with open(imagepath, 'rb') as f:
+            image_data = f.read()
+        return HttpResponse(image_data, content_type="image/png")
+    except Exception as e:
+        print(e)
+        return HttpResponse(str(e))
