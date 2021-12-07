@@ -27,3 +27,8 @@ class AuthorInfo(models.Model):
 class Claim(models.Model):
     uid = models.IntegerField()
     pid = models.IntegerField()
+
+
+class Favor(models.Model):
+    uid = models.IntegerField()
+    pid = models.IntegerField()
