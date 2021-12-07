@@ -109,32 +109,34 @@ def get_hot_field(request):
 	result = [{i[0]:i[1]} for i in result]
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'hot': result})
 
+def get_paper(id):
+	x = Paper.objects.get(id = id)
+	dic = {
+		'year': x.year,
+		'cite': x.cite,
+		'url': list(x.url.split(MAGIC)),
+		'field': list(x.field.split(MAGIC)),
+	}
+	if x.keyword != None:
+		dic['keyword'] = list(x.keyword.split(MAGIC))
+	else:
+		dic['keyword'] = []
+	if x.venue != None:
+		dic['venue'] = x.venue
+	if x.abstract != None:
+		dic['abstract'] = x.abstract
+	if x.lang != None:
+		dic['lang'] = x.lang
+	if x.doi != None:
+		dic['doi'] = x.doi
+	authors = [x.author for x in AuthorInfo.objects.filter(pid = id)]
+	dic['author'] = authors
 
 def get_papers(origin):
 	result = []
 	for claim in origin:
 		paper_id = claim.pid
-		x = Paper.objects.get(id = paper_id)
-		dic = {
-			'year': x.year,
-			'cite': x.cite,
-			'url': list(x.url.split(MAGIC)),
-			'field': list(x.field.split(MAGIC)),
-		}
-		if x.keyword != None:
-			dic['keyword'] = list(x.keyword.split(MAGIC))
-		else:
-			dic['keyword'] = []
-		if x.venue != None:
-			dic['venue'] = x.venue
-		if x.abstract != None:
-			dic['abstract'] = x.abstract
-		if x.lang != None:
-			dic['lang'] = x.lang
-		if x.doi != None:
-			dic['doi'] = x.doi
-		authors = [x.author for x in AuthorInfo.objects.filter(pid = paper_id)]
-		dic['author'] = authors
+		dic = get_paper(paper_id)		
 		result.append(dic)
 	return result
 
