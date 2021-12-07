@@ -159,3 +159,14 @@ def favor(request):
 @csrf_exempt
 def get_favor_list(request):
 	pass
+
+@csrf_exempt
+def get_comments(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'错误'})
+	
+
+@csrf_exempt
+def comment(request):
+	
+	pass
