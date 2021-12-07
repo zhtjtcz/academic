@@ -63,6 +63,9 @@ def get_messages(request):
     messages = []
     for x in origin:
         user = User.objects.get(id=x.uid)
+        realname = ''
+        if x.type == APPEAL_IDENTITY:
+            realname = Scholar.objects.get(uid=x.uid).realname
         messages.append({
             'id': x.id,
             'paper': x.title,
@@ -71,7 +74,8 @@ def get_messages(request):
             'date': str(x.date)[:19],
             'uid': x.uid,
             'pid': x.pid,
-            'content': x.content
+            'content': x.content,
+            'realname': realname
         	}
         )
         if x.type == CLAIM_PAPER:
