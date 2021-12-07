@@ -272,16 +272,18 @@ def set_profile(request):
 def get_profile(request):
     if request.method == 'POST':
         return JsonResponse({'result': ERROR, 'message': r'????'})
-    id = check_session(request)
+    # id = check_session(request)
     # if id == 0:
     #     return JsonResponse({'result': ERROR, 'message': r'请先登录'})
     filename = request.GET.get('img_name')
     try:
         file = open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), 'wb')
         response = FileResponse(file)
+        response['Content-Type'] = 'image/' + os.path.splitext(filename)[1]
         return response
     except FileNotFoundError:
         file = open(os.path.join(MEDIA_ROOT, "default_profile.png").replace('\\', '/'), 'wb')
         response = FileResponse(file)
+        response['Content-Type'] = 'image/' + os.path.splitext(filename)[1]
         return response
 
