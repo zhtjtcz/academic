@@ -193,6 +193,11 @@ USE_TZ = False
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'img').replace('\\', '/')
 
+if platform.system() == "Windows":
+	IMG_URL = "127.0.0.1:8000/"
+else:
+	IMG_URL = "123.57.194.168:8000/"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

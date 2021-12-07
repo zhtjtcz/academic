@@ -42,7 +42,8 @@ def getCountData(field = "", string = "", bucket = ""):
 
 def nomalSearch(request = None,
 				title = "", author = "", abstract = "",
-				page = 1, limit = 20):
+				page = 1, limit = 20, 
+				sorted = 0):
 	mapping = {
 		"query": {
 			"match": {}
@@ -50,6 +51,14 @@ def nomalSearch(request = None,
 		"from": limit*(page-1),
 		"size": limit
 	}
+
+	if sorted != 0:
+		mapping["sort"] = []
+		if abs(sorted) == 1:
+			mapping["sort"].append({"year": {"order": lambda sorted: "asc" if sorted == 1 else "desc"}})
+		elif abs(sorted) == 2:
+			mapping["sort"].append({"cite": {"order": lambda sorted: "asc" if sorted == 1 else "desc"}})
+	# Sort by some order
 
 	if len(title) > 0:
 		field = "title"
