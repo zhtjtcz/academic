@@ -139,6 +139,11 @@ def get_papers(origin):
 def favor(request):
 	if request.method != 'POST':
 		return
+	id = check_session(request)
+	if id == 0:
+		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 	data_json = json.loads(request.body)
-	Favor.objects.create(uid=data_json['uid'], pid=data_json['pid']).save()
+	paper = data_json['paper']
+	paper_id = create_paper(paper)
+	Favor.objects.create(uid=id, pid=paper_id).save()
 	return JsonResponse({'result': ACCEPT, 'message': r'收藏成功！'})
