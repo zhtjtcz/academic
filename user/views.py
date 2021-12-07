@@ -258,14 +258,14 @@ def set_profile(request):
     filename, type = os.path.splitext(file.name)
     if type != '.jpg' and type != '.png':
         return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
-    profile = str(id) + '_' + str(random.Random(time.localtime()).randint(0, 1000)) + type
+    profile = str(id) + type
     user = User.objects.get(id=id)
     user.profile = profile
     user.save()
     with open(os.path.join(MEDIA_ROOT, profile).replace('\\', '/')) as destination:
         for chunk in file.chunks():
             destination.write(chunk)
-    return JsonResponse({'result': ACCEPT, 'message': r'设置成功! ', 'profile': profile})
+    return JsonResponse({'result': ACCEPT, 'message': r'设置成功! '})
 
 
 @csrf_exempt
@@ -287,13 +287,14 @@ def get_profile(request):
     #     response['Content-Type'] = 'image/' + os.path.splitext(filename)[1]
     #     return response
     data = request.GET
-    file_name = data.get("img_name")
+    id = data.get("id")
+    file_name = User.objects.get(id=id).profile
     imagepath = os.path.join(MEDIA_ROOT, file_name).replace('\\', '/')  # 图片路径
     try:
         # with open(imagepath, 'rb') as f:
         f = open(imagepath, 'rb')
         image_data = f.read()
-        return HttpResponse(image_data, content_type="image/"+os.path.splitext(file_name)[1][1:])
+        return HttpResponse(image_data, content_type="image/"+file_name[-3:])
     except Exception as e:
         imagepath = os.path.join(MEDIA_ROOT, 'default_profile.png').replace('\\', '/')  # 图片路径
         with open(imagepath, 'rb') as f:
