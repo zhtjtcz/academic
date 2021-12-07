@@ -1,4 +1,6 @@
 import os
+import random
+import time
 
 from django.shortcuts import render
 from django.http import JsonResponse, FileResponse
@@ -56,7 +58,7 @@ def login(request):
             return JsonResponse({'result': ERROR, 'message': r'密码错误'})
         request.session['is_login'] = True
         request.session['user'] = user.id
-        return JsonResponse({'result': ACCEPT, 'message': r'登录成功!', 'scholar': user.scholar, 'admin': user.admin})
+        return JsonResponse({'result': ACCEPT, 'message': r'登录成功!', 'scholar': user.scholar, 'admin': user.admin, 'profile': user.profile})
 
 
 @csrf_exempt
@@ -256,30 +258,30 @@ def set_profile(request):
     filename, type = os.path.splitext(file.name)
     if type != 'jpg' and type != 'png':
         return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
-    with open(os.path.join(MEDIA_ROOT, str(request.session.get("id"))+"_profile."+type).replace('\\', '/')) as destination:
+    profile = str(id) + '_' + str(random.Random(time.localtime()).randint(0, 1000)) + '.' + type
+    user = User.objects.get(id=id)
+    user.profile = profile
+    user.save()
+    with open(os.path.join(MEDIA_ROOT, profile).replace('\\', '/')) as destination:
         for chunk in file.chunks():
             destination.write(chunk)
-    return JsonResponse({'result': ACCEPT, 'message': r'设置成功! '})
+    return JsonResponse({'result': ACCEPT, 'message': r'设置成功! ', 'profile': profile})
 
 
 @csrf_exempt
 def get_profile(request):
-    if request.method != 'POST':
+    if request.method == 'POST':
         return JsonResponse({'result': ERROR, 'message': r'????'})
     id = check_session(request)
-    if id == 0:
-        return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+    # if id == 0:
+    #     return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+    filename = request.GET.get('img_name')
     try:
-        file = open(os.path.join(MEDIA_ROOT, str(request.session.get("id"))+"_profile.jpg").replace('\\', '/'), 'wb')
+        file = open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), 'wb')
         response = FileResponse(file)
         return response
     except FileNotFoundError:
-        try:
-            file = open(os.path.join(MEDIA_ROOT, str(request.session.get("id")) + "_profile.png").replace('\\', '/'), 'wb')
-            response = FileResponse(file)
-            return response
-        except FileNotFoundError:
-            file = open(os.path.join(MEDIA_ROOT, "default_profile.png").replace('\\', '/'), 'wb')
-            response = FileResponse(file)
-            return response
+        file = open(os.path.join(MEDIA_ROOT, "default_profile.png").replace('\\', '/'), 'wb')
+        response = FileResponse(file)
+        return response
 
