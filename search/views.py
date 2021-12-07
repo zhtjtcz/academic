@@ -30,3 +30,13 @@ def get_history(request):
 		history = request.session.get('history', [])
 		history.reverse()
 		return JsonResponse({'result':ACCEPT, 'message': r'获取成功', 'history': history})
+
+@csrf_exempt
+def del_history(request):
+	if request.method == 'POST':
+		if check_session(request) == 0:
+			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+		data_json = json.loads(request.body)
+		id = 14 - int(data_json.get('id', 0))
+		request.session['history'].pop(id)
+		return JsonResponse({'result':ACCEPT, 'message': r'已删除'})

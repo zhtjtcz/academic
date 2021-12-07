@@ -103,7 +103,7 @@ def nomalSearch(request = None,
 		"pages": (count + limit - 1) // limit
 	}
 
-	if check_session(request):
+	if check_session(request) and page == 1:
 		history = request.session.get('history', [])
 		history.append(
 			{
