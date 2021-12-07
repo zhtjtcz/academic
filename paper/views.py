@@ -104,3 +104,31 @@ def get_hot_field(request):
 	result = Redis.zrevrange(name = "field", start = 1, end = 10, withscores = True, score_cast_func = float)
 	result = [{i[0]:i[1]} for i in result]
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'hot': result})
+
+def get_papers(origin):
+	result = []
+	for claim in origin:
+		paper_id = claim.pid
+		x = Paper.objects.get(id = paper_id)
+		dic = {
+			'year': x.year,
+			'cite': x.cite,
+			'url': list(x.url.split(MAGIC)),
+			'field': list(x.field.split(MAGIC)),
+		}
+		if x.keyword != None:
+			dic['keyword'] = list(x.keyword.split(MAGIC))
+		else:
+			dic['keyword'] = []
+		if x.venue != None:
+			dic['venue'] = x.venue
+		if x.abstract != None:
+			dic['abstract'] = x.abstract
+		if x.lang != None:
+			dic['lang'] = x.lang
+		if x.doi != None:
+			dic['doi'] = x.doi
+		authors = [x.author for x in AuthorInfo.objects.filter(pid = paper_id)]
+		dic['author'] = authors
+		result.append(dic)
+	return result
