@@ -66,7 +66,6 @@ def nomalSearch(request = None,
 		elif abs(sorted) == 2:
 			mapping["sort"].append({"cite": {"order": "asc" if sorted == 1 else "desc"}})
 	# Sort by some order
-	print(mapping)
 
 	if len(title) > 0:
 		field = "title"
