@@ -37,6 +37,6 @@ def del_history(request):
 		if check_session(request) == 0:
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 		data_json = json.loads(request.body)
-		id = len(request.session['history']) - int(data_json.get('id', 0))
+		id = len(request.session['history']) - 1 - int(data_json.get('id', 0))
 		request.session['history'].pop(id)
 		return JsonResponse({'result':ACCEPT, 'message': r'已删除'})
