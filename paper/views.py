@@ -194,6 +194,7 @@ def get_comments(request):
 						'comment': y.comment,
 						'replyname': y.replyname,
 					})
+	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'comments': result})
 
 
 @csrf_exempt
