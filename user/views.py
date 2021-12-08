@@ -156,7 +156,9 @@ def get_scholar_info(request):
 		papers = get_papers(origin)
 	
 	dic = {}
+	print(papers)
 	for i in papers:
+		print(i)
 		if i['year'] in dic:
 			dic[i['year']] += 1
 		else:

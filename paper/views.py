@@ -166,6 +166,35 @@ def get_comments(request):
 	if request.method != 'POST':
 		return JsonResponse({'result': ERROR, 'message': r'错误'})
 	
+	data_json = json.loads(request.body)
+	pid = int(data_json.get('pid', 0))
+	if Comment.objects.filter(pid = pid).exists() == False:
+		return JsonResponse({'result': ERROR, 'message': r'无'})
+	comments = [x for x in Comment.objects.filter(pid = pid)]
+	result = []
+	for x in comments:
+		if x.reply == 0:
+			result.append({
+				'id': x.id,
+				'uid': x.uid,
+				'pid': x.pid,
+				'name': User.objects.get(id = x.uid).username,
+				'time': x.time,
+				'comment': x.comment,
+				'son': []
+			})
+			for y in comments:
+				if y.reply == x.id:
+					result[-1]['son'].append({
+						'id': y.id,
+						'uid': y.uid,
+						'pid': y.pid,
+						'name': User.objects.get(id = y.uid).username,
+						'time': y.time,
+						'comment': y.comment,
+						'replyname': y.replyname,
+					})
+
 
 @csrf_exempt
 def comment(request):
@@ -181,12 +210,14 @@ def comment(request):
 	comment = Comment(
 		uid = id,
 		pid = pid,
-		time = str(datetime()),
+		time = str(datetime.now()),
 		comment = data_json.get('comment', ''),
-		reply = data_json.get('reply', 0),
-		replyuid = data_json.get('replyuid', 0),
+		reply = int(data_json.get('reply', 0)),
+		replyuid = int(data_json.get('replyuid', 0)),
 		replyname = data_json.get('replyname', '')
 	)
+	if comment.replyuid:
+		comment.replyname = User.objects.get(id = comment.replyuid).username
 	comment.save()
 
 	data_json = json.loads(request.body)
