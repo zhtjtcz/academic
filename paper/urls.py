@@ -8,4 +8,6 @@ urlpatterns = [
 	path('get_hot_field', get_hot_field),
 	path('comment', comment),
 	path('get_comments', get_comments),
+	path('favor', favor),
+	path('get_favor_list', get_favor_list),
 ]
