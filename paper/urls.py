@@ -10,4 +10,5 @@ urlpatterns = [
 	path('get_comments', get_comments),
 	path('favor', favor),
 	path('get_favor_list', get_favor_list),
+	path('undo_favor', undo_favor),
 ]
