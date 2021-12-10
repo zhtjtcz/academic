@@ -156,10 +156,18 @@ def favor(request):
 	return JsonResponse({'result': ACCEPT, 'message': r'收藏成功！'})
 
 
-# TODO
 @csrf_exempt
 def get_favor_list(request):
-	pass
+	if request.method != 'POST':
+		return
+	id = check_session(request)
+	if id == 0:
+		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+	data_json = json.loads(request.body)
+	begin = data_json['begin']
+	end = data_json['end']
+	res = Favor.objects.filter(uid=id).all()[begin:end]
+	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'list': res})
 
 @csrf_exempt
 def get_comments(request):
