@@ -59,7 +59,8 @@ def feedback(request):
 		id = check_session(request)
 		if id == 0:
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-		data_json = json.loads(request.body)
+		# data_json = json.loads(request.body)
+		data_json = request.POST
 		content = data_json.get('content', '')
 		file = request.FILES.get('file', None)
 		filename = ''
@@ -225,7 +226,8 @@ def appeal_user(request):
 		id = check_session(request)
 		if id == 0:
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-		data_json = json.loads(request.body)
+		# data_json = json.loads(request.body)
+		data_json = request.POST
 		uid = int(data_json['uid'])
 		file = request.FILES.get('file', None)
 		filename = ''
@@ -246,7 +248,8 @@ def appeal_paper(request):
 		id = check_session(request)
 		if id == 0:
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-		data_json = json.loads(request.body)
+		# data_json = json.loads(request.body)
+		data_json = request.POST
 		uid = int(data_json['uid'])
 		pid = int(data_json['pid'])
 		file = request.FILES.get('file', None)
