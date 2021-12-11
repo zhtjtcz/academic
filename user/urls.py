@@ -18,4 +18,5 @@ urlpatterns = [
 	path('islogin', islogin),
 	path('create_scholar_info', create_scholar_info),
 	path('get_scholar_id', get_scholar_id),
+	path('find_scholar', find_scholar),
 ]
