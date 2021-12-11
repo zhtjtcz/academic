@@ -71,6 +71,14 @@ def claim_paper(request):
 				scholar.cite += paper.cite
 				scholar.save()
 			authors = paper['author']
+			success = False
+			realname = Scholar.objects.get(uid=uid).lower()
+			for i in authors:
+				if i.lower() == realname:
+					success = True
+					break
+			if not success:
+				return JsonResponse({'result': ERROR, 'message': r'认领失败！'})
 			for i in range(len(authors)):
 				for j in range(len(authors)):
 					if i == j:
