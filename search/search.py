@@ -189,11 +189,15 @@ def getLogic(params):
 	logic["bool"]["should"].append(now)
 	return logic
 
-def advanceSearch(params):
+def advanceSearch(params, page, limit):
 	logic = getLogic(params)
-	mapping = {"query": logic}
-	origin = ES.search(index=ES_INDEX, body=mapping)
-	count_info = ES.count(index=ES_INDEX, body={"query" : mapping["query"]})
+	mapping = {
+		"query": logic,
+		"from": limit*(page-1),
+		"size": limit
+	}
+	origin = ES.search(index=ES_INDEX, body = mapping)
+	count_info = ES.count(index=ES_INDEX, body = {"query" : mapping["query"]})
 	
 	count = count_info['count']
 	papers = origin["hits"]["hits"]

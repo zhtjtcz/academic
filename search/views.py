@@ -52,5 +52,7 @@ def advance(request):
 		return JsonResponse({'result': ERROR, 'message': r'错误'})
 	data_json = json.loads(request.body)
 	params = data_json.get('params', [])
-	result = advanceSearch(params)
+	page = int(data_json.get('page', 1))
+	limit = int(data_json.get('limits', 20))
+	result = advanceSearch(params, page, limit)
 	return JsonResponse({'result': ACCEPT, 'message': result})
