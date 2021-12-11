@@ -144,12 +144,13 @@ def get_paper(id):
 		dic['doi'] = x.doi
 	authors = [x.author for x in AuthorInfo.objects.filter(pid = id)]
 	dic['author'] = authors
+	return dic
 
 def get_papers(origin):
 	result = []
 	for claim in origin:
 		paper_id = claim.pid
-		dic = get_paper(paper_id)		
+		dic = get_paper(paper_id)
 		result.append(dic)
 	return result
 
