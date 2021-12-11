@@ -145,7 +145,7 @@ def set_scholar_info(request):
         return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
     data_json = json.loads(request.body)
     scholar = Scholar.objects.get(uid=id)
-    scholar.realname = data_json['realname']
+    # scholar.realname = data_json['realname']
     scholar.website = data_json['website']
     scholar.interest = data_json['interest']
     scholar.belong = data_json['belong']
