@@ -150,14 +150,12 @@ def reply(request):
 	# TODO img
 	file = request.FILES.get('file', None)
 	if file:
-		filename, type = os.path.splitext(file.name)
+		_, type = os.path.splitext(file.name)
 		if type != '.jpg' and type != '.png':
 			return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
-		profile = "m" + str(id) + type
-		user = User.objects.get(id=id)
-		user.profile = profile
+		filename = "m" + str(id) + type
 		user.save()
-		with open(os.path.join(MEDIA_ROOT, profile).replace('\\', '/'), "wb") as destination:
+		with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
 			for chunk in file.chunks():
 				destination.write(chunk)
 	
