@@ -106,6 +106,7 @@ def get_messages(request):
 			'content': x.content,
 			'realname': realname,
 			'contact': x.contact,
+			'url': x.url,
 			}
 		)
 		if x.type == CLAIM_PAPER:
