@@ -42,6 +42,23 @@ def create_paper(info):
 	for x in range(len(authors)):
 		author = AuthorInfo(pid = paper.id, author = authors[x], rank = x)
 		author.save()
+	for i in range(len(authors)):
+		for j in range(len(authors)):
+			if i == j:
+				continue
+			if Relation.objects.filter(name1=authors[i], name2=authors[j]).exists():
+				r = Relation.objects.get(name1=authors[i], name2=authors[j])
+				r.times += 1
+				r.save()
+			else:
+				Relation.objects.create(name1=authors[i], name2=authors[j], times=1)
+
+			if Relation.objects.filter(name1=authors[j], name2=authors[i]).exists():
+				r = Relation.objects.get(name1=authors[j], name2=authors[i])
+				r.times += 1
+				r.save()
+			else:
+				Relation.objects.create(name1=authors[j], name2=authors[i], times=1)
 	return paper.id
 
 @csrf_exempt
