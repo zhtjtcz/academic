@@ -243,7 +243,7 @@ def comment(request):
 	comment = Comment(
 		uid = id,
 		pid = pid,
-		time = str(datetime.now()),
+		time = str(datetime.now())[:19],
 		comment = data_json.get('comment', ''),
 		reply = int(data_json.get('reply', 0)),
 		replyuid = int(data_json.get('replyuid', 0)),
