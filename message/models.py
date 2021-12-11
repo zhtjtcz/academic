@@ -12,6 +12,7 @@ class Message(models.Model):
 	isdeal = models.IntegerField(null = True, blank = True, default = 0)
 	date = models.DateField()
 	content = models.TextField(null=True, blank=True, default = "")
+	contact= models.CharField(max_length=50, blank=True, null=True)
 	reply = models.TextField(null=True, blank=True)
 	url = models.CharField(max_length=50, default='')
 
