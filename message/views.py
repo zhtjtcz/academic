@@ -24,6 +24,7 @@ def create_message(type, uid, pid, title, content=''):
     message.pid = pid
     message.type = type
     message.title = title
+    # message.reply = reply
     message.date = datetime.now()
     user = User.objects.get(id=uid)
     if type == CLAIM_PAPER:
@@ -111,8 +112,17 @@ def get_message(request):
 
 
 @csrf_exempt
+def deal_message(request):
+    if request.method != 'POST':
+        return
+    id = check_session(request)
+    if id == 0:
+        return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+
+
+
+@csrf_exempt
 def deal_claim(request):
-    # TODO 要加一个（可选）的拒绝理由
     id = check_session(request)
     if id == 0:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
@@ -122,13 +132,13 @@ def deal_claim(request):
     data_json = json.loads(request.body)
     id = int(data_json['id'])
     result = int(data_json['result'])
-    # content = int(data_json.get('content', ''))  # 新添加的，optional
+    # reply = data_json.get('reply', '')  # 新添加的，reply
     message = Message.objects.get(id=id)
     if message.isdeal != 0:
         return JsonResponse({'result': ACCEPT, 'message': r'已完成处理！'})
     message.isdeal = result
     message.isread = True
-    # message.content = content  # 新添加
+    # message.reply = reply  # 新添加
     message.save()
     if result == 1:
         if Claim.objects.filter(uid=message.uid, pid=message.pid).exists() == False:
