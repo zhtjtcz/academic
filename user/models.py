@@ -24,3 +24,6 @@ class Scholar(models.Model):
     introduction = models.TextField(null=True, blank=True)
     download = models.IntegerField(default=0)
     cite = models.IntegerField(default=0)
+
+    def to_dic(self):
+        return {'uid': self.uid, 'realname': self.realname, 'belong': self.belong}
