@@ -13,6 +13,7 @@ class Message(models.Model):
 	date = models.DateField()
 	content = models.TextField(null=True, blank=True, default = "")
 	reply = models.TextField(null=True, blank=True)
+	url = models.CharField(max_length=50, default='')
 
 
 class Feedback(models.Model):
