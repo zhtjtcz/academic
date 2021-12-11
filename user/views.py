@@ -300,11 +300,12 @@ def get_profile(request):
     #     response = FileResponse(file)
     #     response['Content-Type'] = 'image/' + os.path.splitext(filename)[1]
     #     return response
-    data = request.GET
-    id = data.get("id")
-    file_name = User.objects.get(id=id).profile
-    imagepath = os.path.join(MEDIA_ROOT, file_name).replace('\\', '/')  # 图片路径
+
     try:
+        data = request.GET
+        id = data.get("id")
+        file_name = User.objects.get(id=id).profile
+        imagepath = os.path.join(MEDIA_ROOT, file_name).replace('\\', '/')  # 图片路径
         # with open(imagepath, 'rb') as f:
         f = open(imagepath, 'rb')
         image_data = f.read()

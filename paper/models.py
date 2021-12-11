@@ -42,3 +42,9 @@ class Comment(models.Model):
 	reply = models.IntegerField()
 	replyuid = models.IntegerField(null=True, blank=True, default=0)
 	replyname = models.CharField(max_length = 50, null=True, blank=True, default='')
+
+
+class Relation(models.Model):
+    name1 = models.CharField(max_length=50, default='')
+    name2 = models.CharField(max_length=50, default='')
+    times = models.IntegerField()
