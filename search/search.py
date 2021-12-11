@@ -143,34 +143,3 @@ def nomalSearch(request = None,
 		result["author"] = author_bucket
 		result["field"] = field_bucket
 	return result
-
-'''
-{
-	"query": {
-		"match": {
-			"field": {
-				"query": "field", 
-				"minimum_should_match": "75%"}
-			}
-		}, 
-		"from": 0,
-		"size": 20, 
-		"sort": []
-}
-'''
-
-'''
-{
-    "query": {
-        "match": {
-            "field": {
-                "query": "acs",
-			    "minimum_should_match": "75%"
-            }
-        }
-    },
-    "from": 0,
-    "size": 20,
-    "sort": []
-}
-'''
