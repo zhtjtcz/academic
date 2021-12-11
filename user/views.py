@@ -20,6 +20,7 @@ from paper.views import get_papers
 import json
 from hashlib import md5
 import re
+from academic.settings import Redis
 
 @csrf_exempt
 def test(request):
@@ -167,15 +168,17 @@ def get_scholar_info(request):
 		origin = [x for x in Claim.objects.filter(uid = scholar.uid)]
 		papers = get_papers(origin)
 	
+	Redis.zincrby(name = "visit", value = author, amount = 1)
+	visit = Redis.zscore(name = "visit", value = author)
+
 	dic = {}
 	for i in papers:
 		if i['year'] in dic:
 			dic[i['year']] += 1
 		else:
 			dic[i['year']] = 1
-	login_user = check_session(request)
 	return JsonResponse({'name': scholar.realname, 'cite': scholar.cite, 'belong': scholar.belong, 'interest': scholar.interest,
-						'website': scholar.website, 'papers': papers, 'year': dic})
+						'website': scholar.website, 'papers': papers, 'year': dic, 'visit': int(visit)})
 
 @csrf_exempt
 def change_password(request):
