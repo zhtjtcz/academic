@@ -144,7 +144,8 @@ def get_scholar_info(request):
 	
 	data_json = json.loads(request.body)
 	id = int(data_json.get('id', 0))
-	id = check_session(request)
+	if id == 0:
+		id = check_session(request)
 	if id == 0:
 		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 	
