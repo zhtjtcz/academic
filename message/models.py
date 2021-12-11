@@ -12,3 +12,4 @@ class Message(models.Model):
 	isdeal = models.IntegerField(null = True, blank = True, default = 0)
 	date = models.DateField()
 	content = models.TextField(null=True, blank=True, default = "")
+	reply = models.TextField(null=True, blank=True)
