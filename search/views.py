@@ -17,10 +17,11 @@ def search(request):
 		abstract = data_json.get('abstract', "")
 		field = data_json.get('field', "")
 		doi = data_json.get('doi', "")
+		keyword = data_json.get('keyword', "")
 		page = int(data_json.get('page', 1))
 		limit = int(data_json.get('limit', 20))
 		sorted = int(data_json.get('sorted', 0))
-		result = nomalSearch(request = request, title = title, author = author, abstract = abstract, field = field, doi = doi,
+		result = nomalSearch(request = request, title = title, author = author, abstract = abstract, field = field, doi = doi, keyword = keyword,
 			page = page, limit = limit, sorted = sorted)
 		return JsonResponse({'result': ACCEPT, 'message': result})
 
