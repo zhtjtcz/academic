@@ -126,7 +126,7 @@ def nomalSearch(request = None,
 	if check_session(request) and page == 1:
 		history = request.session.get('history', [])
 		history.append({
-				"field": field,
+				"field": search_field,
 				"string": string,
 				"time": str(datetime.now())[:19],
 			}
