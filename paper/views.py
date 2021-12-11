@@ -175,10 +175,10 @@ def check_favor(request):
 		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 	data_json = json.loads(request.body)
 	paper_id = data_json['pid']
-	if Favor.objects.filter(uid=id, pid=paper_id) is None:
+	if len(Favor.objects.filter(uid=id, pid=paper_id)) == 0:
 		return JsonResponse({'result': ACCEPT, 'message': r'没收藏', 'r': 0})
 	else:
-		return JsonResponse({'result': ACCEPT, 'message': r'没收藏', 'r': 1})
+		return JsonResponse({'result': ACCEPT, 'message': r'已收藏', 'r': 1})
 
 
 @csrf_exempt
