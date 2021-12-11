@@ -167,6 +167,21 @@ def favor(request):
 
 
 @csrf_exempt
+def check_favor(request):
+	if request.method != 'POST':
+		return
+	id = check_session(request)
+	if id == 0:
+		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+	data_json = json.loads(request.body)
+	paper_id = data_json['pid']
+	if len(Favor.objects.filter(uid=id, pid=paper_id)) == 0:
+		return JsonResponse({'result': ACCEPT, 'message': r'没收藏', 'r': 0})
+	else:
+		return JsonResponse({'result': ACCEPT, 'message': r'已收藏', 'r': 1})
+
+
+@csrf_exempt
 def undo_favor(request):
 	if request.method != 'POST':
 		return
@@ -174,8 +189,7 @@ def undo_favor(request):
 	if id == 0:
 		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 	data_json = json.loads(request.body)
-	paper = data_json['paper']
-	paper_id = create_paper(paper)
+	paper_id = data_json['pid']
 	Favor.objects.filter(uid=id, pid=paper_id).delete()
 	return JsonResponse({'result': ACCEPT, 'message': r'取消成功！'})
 

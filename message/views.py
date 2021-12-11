@@ -142,6 +142,16 @@ def feedback(request):
 	# Update the feedback
 
 @csrf_exempt
+def deal_message(request):
+    if request.method != 'POST':
+        return
+    id = check_session(request)
+    if id == 0:
+        return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+
+
+
+@csrf_exempt
 def deal_claim(request):
 	# TODO 要加一个（可选）的拒绝理由
 	id = check_session(request)
