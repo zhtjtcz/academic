@@ -84,6 +84,15 @@ def register(request):
         user.save()
         return JsonResponse({'result': ACCEPT, 'message': r'注册成功'})
 
+@csrf_exempt
+def get_scholar_id(request):
+	data_json = json.loads(request.body)
+	name = data_json.get('name', '')
+	if Scholar.objects.filter(realname__icontains = name).exists() == False:
+		return JsonResponse({'result': ACCEPT, 'id': -1, 'isself': False})
+	scholar = Scholar.objects.get(realname__icontains = name)
+	id = check_session(request)
+	return JsonResponse({'result': ACCEPT, 'id': scholar.uid, 'isself': scholar.uid == id})
 
 @csrf_exempt
 def set_introduction(request):
@@ -164,7 +173,7 @@ def get_scholar_info(request):
 			dic[i['year']] += 1
 		else:
 			dic[i['year']] = 1
-
+	login_user = check_session(request)
 	return JsonResponse({'name': scholar.realname, 'cite': scholar.cite, 'belong': scholar.belong, 'interest': scholar.interest,
 						'website': scholar.website, 'papers': papers, 'year': dic})
 
