@@ -253,4 +253,4 @@ def comment(request):
 		comment.replyname = User.objects.get(id = comment.replyuid).username
 	comment.save()
 
-	data_json = json.loads(request.body)
+	return JsonResponse({'result': ACCEPT, 'message':r'评论成功！'})
