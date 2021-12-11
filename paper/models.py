@@ -52,3 +52,6 @@ class Relation(models.Model):
     name1 = models.CharField(max_length=50, default='')
     name2 = models.CharField(max_length=50, default='')
     times = models.IntegerField()
+
+    def to_dic(self):
+		return {'name': self.name2, 'value': self.times}
