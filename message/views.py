@@ -106,6 +106,7 @@ def get_messages(request):
 			'content': x.content,
 			'realname': realname,
 			'contact': x.contact,
+			'url': x.url,
 			}
 		)
 		if x.type == CLAIM_PAPER:
@@ -234,7 +235,8 @@ def appeal_user(request):
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 		# data_json = json.loads(request.body)
 		data_json = request.POST
-		uid = int(data_json['uid'])
+		# uid = int(data_json['uid'])
+		uid = data_json.get('uid', 0)
 		file = request.FILES.get('file', None)
 		filename = ''
 		if file:
@@ -257,7 +259,8 @@ def appeal_paper(request):
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 		# data_json = json.loads(request.body)
 		data_json = request.POST
-		uid = int(data_json['uid'])
+		# uid = int(data_json['uid'])
+		uid = data_json.get('uid', 0)
 		pid = int(data_json['pid'])
 		file = request.FILES.get('file', None)
 		filename = ''
