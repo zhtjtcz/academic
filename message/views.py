@@ -116,7 +116,7 @@ def get_feedbacks(request):
 	origin = [x for x in Feedback.objects.filter(uid = id)]
 	feedbacks = []
 	for x in origin:
-		feedback.append({
+		feedbacks.append({
 			'id': x.id,
 			'type': x.type,
 			'reply': x.reply,
