@@ -89,11 +89,17 @@ def register(request):
 def get_scholar_id(request):
 	data_json = json.loads(request.body)
 	name = data_json.get('name', '')
-	if Scholar.objects.filter(realname__icontains = name).exists() == False:
-		return JsonResponse({'result': ACCEPT, 'id': -1, 'isself': False})
-	scholar = Scholar.objects.get(realname__icontains = name)
-	id = check_session(request)
-	return JsonResponse({'result': ACCEPT, 'id': scholar.uid, 'isself': scholar.uid == id})
+	if len(name) > 0:
+		if Scholar.objects.filter(realname__icontains = name).exists() == False:
+			return JsonResponse({'result': ACCEPT, 'id': -1, 'isself': False})
+		scholar = Scholar.objects.get(realname__icontains = name)
+		id = check_session(request)
+		return JsonResponse({'result': ACCEPT, 'id': scholar.uid, 'isself': scholar.uid == id})
+	else:
+		id = int(data_json['id'])
+		scholar = Scholar.objects.get(uid = id)
+		login_id = check_session(request)
+		return JsonResponse({'result': ACCEPT, 'name': scholar.realname, 'isself': login_id == id})
 
 @csrf_exempt
 def set_introduction(request):
