@@ -59,8 +59,18 @@ def claim_paper(request):
 				pid = Paper.objects.get(id = int(paper['id'])).id
 			if Claim.objects.filter(uid = uid, pid = pid).exists() == True:
 				return JsonResponse({'result': ERROR, 'message': r'您已认领该论文！'})
-			create_message(CLAIM_PAPER, uid, pid, paper['title'])
-		return JsonResponse({'result': ACCEPT, 'message': r'认领申请已提交！'})
+			if Claim.objects.filter(uid = uid, pid = pid).exists() == False:
+				claim = Claim(uid = uid, pid = pid)
+				claim.save()
+				user = User.objects.get(id = uid)
+				user.scholar = True
+				user.save()
+				paper = Paper.objects.get(id = pid)
+				scholar = Scholar.objects.get(uid = uid)
+				scholar.cite += paper.cite
+				scholar.save()
+			# create_message(CLAIM_PAPER, uid, pid, paper['title'])
+		return JsonResponse({'result': ACCEPT, 'message': r'已完成认领！'})
 
 @csrf_exempt
 def download(request):
