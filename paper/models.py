@@ -5,7 +5,7 @@ from django.db import models
 
 class Paper(models.Model):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=200)
     keyword = models.TextField(null=True, blank=True)
     abstract = models.TextField(null=True, blank=True)
     venue = models.CharField(max_length=100, null=True, blank=True)
