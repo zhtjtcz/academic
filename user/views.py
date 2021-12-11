@@ -157,6 +157,8 @@ def get_scholar_info(request):
 	author = data_json.get('author', '')
 	
 	if len(author) == 0:
+		if Scholar.objects.filter(uid = id).exists() == False:
+			return JsonResponse({'result': ERROR, 'message': '还未认证!'})
 		scholar = Scholar.objects.get(uid = id)
 	else:
 		if Scholar.objects.filter(realname__icontains = author).exists() == False:
