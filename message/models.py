@@ -13,3 +13,14 @@ class Message(models.Model):
 	date = models.DateField()
 	content = models.TextField(null=True, blank=True, default = "")
 	reply = models.TextField(null=True, blank=True)
+
+
+class Feedback(models.Model):
+	id = models.AutoField(primary_key=True)
+	uid = models.IntegerField()
+	mid = models.IntegerField()
+	type = models.IntegerField(default = 1)
+	reply = models.TextField(null=True, blank=True)
+	isdeal = models.BooleanField(default = False)
+	date = models.DateField()
+	url =  models.CharField(max_length=50, default='default_profile.png')
