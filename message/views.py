@@ -20,13 +20,14 @@ from paper.models import *
 
 # Create your views here.
 
-def create_message(type, uid, pid, title, content='', url=''):
+def create_message(type, uid, pid, title, content='', url='', contact=''):
 	message = Message()
 	message.uid = uid
 	message.pid = pid
 	message.type = type
 	message.title = title
 	message.url = url
+	message.contact = contact
 	message.date = datetime.now()
 	user = User.objects.get(id=uid)
 
@@ -62,6 +63,7 @@ def feedback(request):
 		# data_json = json.loads(request.body)
 		data_json = request.POST
 		content = data_json.get('content', '')
+		contact = data_json.get('contact', '')
 		file = request.FILES.get('file', None)
 		filename = ''
 		if file:
@@ -72,7 +74,7 @@ def feedback(request):
 			with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
 				for chunk in file.chunks():
 					destination.write(chunk)
-		create_message(FEEDBACK, id, 0, data_json.get('title', ''), content, filename)
+		create_message(FEEDBACK, id, 0, data_json.get('title', ''), content, filename, contact)
 		return JsonResponse({'result': ACCEPT, 'message': r'反馈成功！'})
 
 
@@ -99,7 +101,8 @@ def get_messages(request):
 			'uid': x.uid,
 			'pid': x.pid,
 			'content': x.content,
-			'realname': realname
+			'realname': realname,
+			'contact': x.contact,
 			}
 		)
 		if x.type == CLAIM_PAPER:
@@ -239,7 +242,8 @@ def appeal_user(request):
 			with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
 				for chunk in file.chunks():
 					destination.write(chunk)
-		create_message(APPEAL_IDENTITY, uid, 0, data_json.get('title', ''), data_json.get('content', ''), filename)
+		contact = data_json.get('contact', '')
+		create_message(APPEAL_IDENTITY, uid, 0, data_json.get('title', ''), data_json.get('content', ''), filename, contact)
 		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
 
 @csrf_exempt
@@ -262,7 +266,8 @@ def appeal_paper(request):
 			with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
 				for chunk in file.chunks():
 					destination.write(chunk)
-		create_message(APPEAL_PAPER, uid, pid, data_json.get('title', ''), filename)
+		contact = data_json.get('contact', '')
+		create_message(APPEAL_PAPER, uid, pid, data_json.get('title', ''), filename, contact)
 		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
 
 
