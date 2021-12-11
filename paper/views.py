@@ -305,3 +305,17 @@ def comment(request):
 	comment.save()
 
 	return JsonResponse({'result': ACCEPT, 'message':r'评论成功！'})
+
+
+@csrf_exempt
+def get_relation(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'错误'})
+	data_json = json.loads(request.body)
+	name = data_json['name']
+	res = []
+	rs = Relation.objects.filter(name1=name)
+	if rs.exists():
+		res = [i.to_dic() for i in rs]
+
+	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'list': res})
