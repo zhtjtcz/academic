@@ -160,6 +160,8 @@ def reply(request):
 	feedback.save()
 	# Update the feedback
 
+	return JsonResponse({'result': ACCEPT, 'message': r'反馈成功！'})
+
 @csrf_exempt
 def deal_message(request):
     if request.method != 'POST':
