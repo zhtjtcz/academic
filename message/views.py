@@ -1,6 +1,7 @@
 import os
 import random
 import time
+import uuid
 
 from django import forms
 from django.shortcuts import render
@@ -45,6 +46,7 @@ def create_message(type, uid, pid, title, content='', url='', contact=''):
 	else:
 		print("Fuck Frontend")
 	message.save()
+	rid = message.id
 	
 	feedback = Feedback()
 	feedback.date = datetime.now()
@@ -53,6 +55,7 @@ def create_message(type, uid, pid, title, content='', url='', contact=''):
 	feedback.type = type
 	feedback.reply = '您的申诉已提交，请等待管理员处理'	if type in [APPEAL_IDENTITY, APPEAL_PAPER] else '您的反馈已提交，请等待管理员处理'
 	feedback.save()
+	return rid
 
 @csrf_exempt
 def feedback(request):
@@ -70,7 +73,7 @@ def feedback(request):
 			_, type = os.path.splitext(file.name)
 			if type != '.jpg' and type != '.png':
 				return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
-			filename = "m" + str(id) + "_" + str(random.Random(time.localtime()).randint(0, 1000)) + type
+			filename = "m" + str(id) + "_" + str(uuid.uuid1()) + type
 			with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
 				for chunk in file.chunks():
 					destination.write(chunk)
@@ -238,7 +241,7 @@ def appeal_user(request):
 			_, type = os.path.splitext(file.name)
 			if type != '.jpg' and type != '.png':
 				return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
-			filename = "m" + str(id) + "_" + str(random.Random(time.localtime()).randint(0, 1000)) + type
+			filename = "m" + str(id) + "_" + str(uuid.uuid1()) + type
 			with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
 				for chunk in file.chunks():
 					destination.write(chunk)
@@ -262,7 +265,7 @@ def appeal_paper(request):
 			_, type = os.path.splitext(file.name)
 			if type != '.jpg' and type != '.png':
 				return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
-			filename = "m" + str(id) + "_" + str(random.Random(time.localtime()).randint(0, 1000)) + type
+			filename = "m" + str(id) + "_" + str(uuid.uuid1()) + type
 			with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
 				for chunk in file.chunks():
 					destination.write(chunk)
