@@ -48,7 +48,7 @@ def getCountData(field = "", string = "", bucket = ""):
 	return result
 
 def nomalSearch(request = None,
-				title = "", author = "", abstract = "",
+				title = "", author = "", abstract = "", field = "", doi = "",
 				page = 1, limit = 20,
 				sorted = 0):
 	mapping = {
@@ -88,7 +88,21 @@ def nomalSearch(request = None,
 			"query": abstract,
 			"minimum_should_match": "75%"
 		}
-	
+	elif len(doi) > 0:
+		field = "doi"
+		string = doi
+		mapping["query"]["match"]["doi"] = {
+			"query": doi,
+			"minimum_should_match": "75%"
+		}
+	elif len(field) > 0:
+		field = "field"
+		string = field
+		mapping["query"]["match"]["field"] = {
+			"query": field,
+			"minimum_should_match": "75%"
+		}
+
 	origin = ES.search(index='marvolo', body=mapping)
 	count_info = ES.count(index='marvolo', body={"query" : mapping["query"]})
 	count = count_info['count']

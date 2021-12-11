@@ -123,6 +123,7 @@ def get_paper(id):
 	x = Paper.objects.get(id = id)
 	dic = {
 		'id': x.id,
+		'title': x.title,
 		'year': x.year,
 		'cite': x.cite,
 	}
