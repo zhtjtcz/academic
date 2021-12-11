@@ -145,8 +145,16 @@ def get_hot_keyword(request):
 
 @csrf_exempt
 def get_hot_paper(request):
+	# TODO del
 	result = Redis.zrevrange(name = "paper", start = 1, end = 10, withscores = True, score_cast_func = float)
-	result = [{list(i[0].split(MAGIC))[1]:i[1]} for i in result]
+	result = [x for x in result]
+	clear = []
+	for x in result:
+		if MAGIC in x[0]:
+			Redis.zrem("paper", x[0])
+		else:
+			clear.append(x)
+	result = [{i[0]:i[1]} for i in clear]
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'hot': result})
 
 def get_paper(id):
