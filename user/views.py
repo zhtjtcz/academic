@@ -154,15 +154,15 @@ def get_scholar_info(request):
 	
 	data_json = json.loads(request.body)
 	id = int(data_json.get('id', 0))
-	if id == 0:
-		id = check_session(request)
-	if id == 0:
-		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+	author = data_json.get('author', '')
 	
-	author = data_json['author']
-	if Scholar.objects.filter(realname__icontains = author).exists() == False:
-		return JsonResponse({'result': ERROR, 'message': '还未认证!'})
-	scholar = Scholar.objects.get(realname__icontains = author)
+	if len(author) == 0:
+		scholar = Scholar.objects.get(uid = id)
+	else:
+		if Scholar.objects.filter(realname__icontains = author).exists() == False:
+			return JsonResponse({'result': ERROR, 'message': '还未认证!'})
+		scholar = Scholar.objects.get(realname__icontains = author)
+	
 	papers = []
 	if Claim.objects.filter(uid = scholar.uid).exists() == True:
 		origin = [x for x in Claim.objects.filter(uid = scholar.uid)]
