@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from academic.settings import Redis
 
 '''
-需要支持的功能：多字段检索
+需要支持的功能:多字段检索
 '''
 
 def update_hot(bucket, result):
@@ -36,7 +36,7 @@ def getCountData(field = "", string = "", bucket = ""):
         	}
    		}
 	}
-	origin = ES.search(index='marvolo', body=mapping)
+	origin = ES.search(index=ES_INDEX, body=mapping)
 	data = origin["aggregations"]["result"]["buckets"]
 	result = [i for i in data if len(str(i['key'])) >= 3]
 	if len(result) > 10:
@@ -48,7 +48,7 @@ def getCountData(field = "", string = "", bucket = ""):
 	return result
 
 def nomalSearch(request = None,
-				title = "", author = "", abstract = "", field = "", doi = "",
+				title = "", author = "", abstract = "",  doi = "", field = "",
 				page = 1, limit = 20,
 				sorted = 0):
 	mapping = {
@@ -68,43 +68,43 @@ def nomalSearch(request = None,
 	# Sort by some order
 
 	if len(title) > 0:
-		field = "title"
+		search_field = "title"
 		string = title
 		mapping["query"]["match"]["title"] = {
 			"query": title,
 			"minimum_should_match": "75%"
 		}
 	elif len(author) > 0:
-		field = "author"
+		search_field = "author"
 		string = author
 		mapping["query"]["match"]["author"] = {
 			"query": author,
 			"minimum_should_match": "75%"
 		}
 	elif len(abstract) > 0:
-		field = "abstract"
+		search_field = "abstract"
 		string = abstract
 		mapping["query"]["match"]["abstract"] = {
 			"query": abstract,
 			"minimum_should_match": "75%"
 		}
 	elif len(doi) > 0:
-		field = "doi"
+		search_field = "doi"
 		string = doi
 		mapping["query"]["match"]["doi"] = {
 			"query": doi,
 			"minimum_should_match": "75%"
 		}
 	elif len(field) > 0:
-		field = "field"
+		search_field = "field"
 		string = field
 		mapping["query"]["match"]["field"] = {
 			"query": field,
 			"minimum_should_match": "75%"
 		}
-
-	origin = ES.search(index='marvolo', body=mapping)
-	count_info = ES.count(index='marvolo', body={"query" : mapping["query"]})
+	print(mapping)
+	origin = ES.search(index=ES_INDEX, body=mapping)
+	count_info = ES.count(index=ES_INDEX, body={"query" : mapping["query"]})
 	count = count_info['count']
 	
 	papers = origin["hits"]["hits"]
@@ -118,8 +118,7 @@ def nomalSearch(request = None,
 
 	if check_session(request) and page == 1:
 		history = request.session.get('history', [])
-		history.append(
-			{
+		history.append({
 				"field": field,
 				"string": string,
 				"time": str(datetime.now())[:19],
@@ -131,10 +130,41 @@ def nomalSearch(request = None,
 		# Save the search history
 
 	if page == 1:
-		year_bucket = getCountData(field = field, string = string, bucket = "year")
-		author_bucket = getCountData(field = field, string = string, bucket = "author.raw")
-		field_bucket = getCountData(field = field, string = string, bucket = "field")
+		year_bucket = getCountData(field = search_field, string = string, bucket = "year")
+		author_bucket = getCountData(field = search_field, string = string, bucket = "author.raw")
+		field_bucket = getCountData(field = search_field, string = string, bucket = "field")
 		result["year"] = year_bucket
 		result["author"] = author_bucket
 		result["field"] = field_bucket
 	return result
+
+'''
+{
+	"query": {
+		"match": {
+			"field": {
+				"query": "field", 
+				"minimum_should_match": "75%"}
+			}
+		}, 
+		"from": 0,
+		"size": 20, 
+		"sort": []
+}
+'''
+
+'''
+{
+    "query": {
+        "match": {
+            "field": {
+                "query": "acs",
+			    "minimum_should_match": "75%"
+            }
+        }
+    },
+    "from": 0,
+    "size": 20,
+    "sort": []
+}
+'''
