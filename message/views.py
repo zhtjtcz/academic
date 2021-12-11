@@ -149,6 +149,17 @@ def reply(request):
 	reply = data_json['reply']
 	# TODO img
 	file = request.FILES.get('file', None)
+	if file:
+		filename, type = os.path.splitext(file.name)
+		if type != '.jpg' and type != '.png':
+			return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
+		profile = "m" + str(id) + type
+		user = User.objects.get(id=id)
+		user.profile = profile
+		user.save()
+		with open(os.path.join(MEDIA_ROOT, profile).replace('\\', '/'), "wb") as destination:
+			for chunk in file.chunks():
+				destination.write(chunk)
 	
 	message = Message.objects.get(id = id)
 	message.isdeal = True
