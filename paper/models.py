@@ -16,6 +16,7 @@ class Paper(models.Model):
     doi = models.CharField(max_length=50, null=True, blank=True)
     field = models.TextField(null=True, blank=True)
     download = models.IntegerField(default=0)
+    favors = models.IntegerField(default=0)
 
 
 class AuthorInfo(models.Model):
