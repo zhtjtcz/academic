@@ -125,9 +125,11 @@ def get_paper(id):
 		'id': x.id,
 		'year': x.year,
 		'cite': x.cite,
-		'url': list(x.url.split(MAGIC)),
-		'field': list(x.field.split(MAGIC)),
 	}
+	if x.url != None:
+		dic['url'] = list(x.url.split(MAGIC))
+	if x.field != None:
+		dic['field'] = list(x.field.split(MAGIC))
 	if x.keyword != None:
 		dic['keyword'] = list(x.keyword.split(MAGIC))
 	else:
