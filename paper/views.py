@@ -157,9 +157,9 @@ def get_hot_paper(request):
 	result = [{
 				'title': Paper.objects.get(id = i[0]),
 				'id': i[0],
-				'hot': i[1],
+				'hot': int(i[1]),
 			} for i in clear]
-	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'hot': result})
+	return JsonResponse({'result': result})
 
 def get_paper(id):
 	x = Paper.objects.get(id = id)
