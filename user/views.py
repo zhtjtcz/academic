@@ -141,11 +141,13 @@ def set_scholar_info(request):
 def get_scholar_info(request):
 	if request.method != 'POST':
 		return JsonResponse({'result': ERROR, 'message': r'你在干嘛'})
+	
+	data_json = json.loads(request.body)
+	id = int(data_json.get('id', 0))
 	id = check_session(request)
 	if id == 0:
 		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 	
-	data_json = json.loads(request.body)
 	author = data_json['author']
 	if Scholar.objects.filter(realname__icontains = author).exists() == False:
 		return JsonResponse({'result': ERROR, 'message': '还未认证!'})
@@ -156,9 +158,7 @@ def get_scholar_info(request):
 		papers = get_papers(origin)
 	
 	dic = {}
-	print(papers)
 	for i in papers:
-		print(i)
 		if i['year'] in dic:
 			dic[i['year']] += 1
 		else:
