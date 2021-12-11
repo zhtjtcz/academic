@@ -12,4 +12,5 @@ urlpatterns = [
 	path('appeal_paper', appeal_paper),
 	path('reply', reply),
 	path('get_feedbacks', get_feedbacks),
+	path('look_feedback_img', look_feedback_img),
 ]
