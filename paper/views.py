@@ -43,23 +43,6 @@ def create_paper(info):
 	for x in range(len(authors)):
 		author = AuthorInfo(pid = paper.id, author = authors[x], rank = x)
 		author.save()
-	for i in range(len(authors)):
-		for j in range(len(authors)):
-			if i == j:
-				continue
-			if Relation.objects.filter(name1=authors[i], name2=authors[j]).exists():
-				r = Relation.objects.get(name1=authors[i], name2=authors[j])
-				r.times += 1
-				r.save()
-			else:
-				Relation.objects.create(name1=authors[i], name2=authors[j], times=1)
-
-			if Relation.objects.filter(name1=authors[j], name2=authors[i]).exists():
-				r = Relation.objects.get(name1=authors[j], name2=authors[i])
-				r.times += 1
-				r.save()
-			else:
-				Relation.objects.create(name1=authors[j], name2=authors[i], times=1)
 	return paper.id
 
 @csrf_exempt
@@ -87,7 +70,24 @@ def claim_paper(request):
 				scholar = Scholar.objects.get(uid = uid)
 				scholar.cite += paper.cite
 				scholar.save()
-			# create_message(CLAIM_PAPER, uid, pid, paper['title'])
+			authors = paper['author']
+			for i in range(len(authors)):
+				for j in range(len(authors)):
+					if i == j:
+						continue
+					if Relation.objects.filter(name1=authors[i], name2=authors[j]).exists():
+						r = Relation.objects.get(name1=authors[i], name2=authors[j])
+						r.times += 1
+						r.save()
+					else:
+						Relation.objects.create(name1=authors[i], name2=authors[j], times=1)
+
+					if Relation.objects.filter(name1=authors[j], name2=authors[i]).exists():
+						r = Relation.objects.get(name1=authors[j], name2=authors[i])
+						r.times += 1
+						r.save()
+					else:
+						Relation.objects.create(name1=authors[j], name2=authors[i], times=1)
 		return JsonResponse({'result': ACCEPT, 'message': r'已完成认领！'})
 
 @csrf_exempt
@@ -154,7 +154,11 @@ def get_hot_paper(request):
 			Redis.zrem("paper", x[0])
 		else:
 			clear.append(x)
-	result = [{i[0]:i[1]} for i in clear]
+	result = [{
+				'title': Paper.objects.get(id = i[0]),
+				'id': i[0],
+				'hot': i[1],
+			} for i in clear]
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'hot': result})
 
 def get_paper(id):
