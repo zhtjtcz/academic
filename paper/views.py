@@ -190,10 +190,9 @@ def read_paper(request):
 	if request.method != 'POST':
 		return JsonResponse({'result': ERROR, 'message': r'错误'})
 	data_json = json.loads(request.body)
-	id = int(data_json['id'])
-	title = data_json['title']
-	value = str(id) + MAGIC + title
-	Redis.zincrby(name = "paper", value = value, amount = 1)
+	paper = data_json.get('paper')
+	paperid = create_paper(paper)
+	Redis.zincrby(name = "paper", value = paperid, amount = 1)
 	return JsonResponse({'result': ACCEPT, 'message': r'成功！'})
 
 @csrf_exempt
@@ -202,9 +201,7 @@ def get_reads(request):
 		return JsonResponse({'result': ERROR, 'message': r'错误'})
 	data_json = json.loads(request.body)
 	id = int(data_json['id'])
-	title = data_json['title']
-	value = str(id) + MAGIC + title
-	reads = Redis.zscore(name = "paper", value = value)
+	reads = Redis.zscore(name = "paper", value = id)
 	if reads == None:
 		reads = 0
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'reads': int(reads)})
