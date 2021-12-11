@@ -17,4 +17,5 @@ urlpatterns = [
 	path('get_relation', get_relation),
 	path('get_reads', get_reads),
 	path('read_paper', read_paper),
+	path('get_paper_info', get_paper_info),
 ]

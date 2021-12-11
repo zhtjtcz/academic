@@ -152,6 +152,15 @@ def get_hot_keyword(request):
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'hot': result})
 
 @csrf_exempt
+def get_paper_info(request):
+	if request.method != "POST":
+		return JsonResponse({'result': ERROR, 'message': r'错误'})
+	data_json = json.loads(request.body)
+	id = int(data_json['id'])
+	paper = get_paper(id)
+	return JsonResponse({'result': ACCEPT, 'message': r'成功', 'paper': paper})
+
+@csrf_exempt
 def get_hot_paper(request):
 	# TODO del
 	result = Redis.zrevrange(name = "paper", start = 1, end = 10, withscores = True, score_cast_func = float)
