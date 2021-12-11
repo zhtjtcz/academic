@@ -93,6 +93,25 @@ def get_messages(request):
 	messages.sort(key=lambda x: -x["id"])
 	return JsonResponse({'result': ACCEPT, 'message': '获取成功！', 'messages': messages})
 
+@csrf_exempt
+def get_feedbacks(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'错误'})
+	id = check_session(request)
+	if id == 0:
+		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+	origin = [x for x in Feedback.objects.filter(uid = id)]
+	feedbacks = []
+	for x in origin:
+		feedback.append({
+			'id': x.id,
+			'type': x.type,
+			'reply': x.reply,
+			'isdeal': x.isdeal,
+			'date': str(x.date)[:19],
+			'url': x.url,
+		})
+	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'feedbacks': feedbacks})
 
 @csrf_exempt
 def get_message(request):
@@ -118,7 +137,7 @@ def get_message(request):
 	return JsonResponse({'result': ACCEPT, 'message': out})
 
 @csrf_exempt
-def feedback(request):
+def reply(request):
 	id = check_session(request)
 	if id == 0:
 		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
