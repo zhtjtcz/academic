@@ -26,3 +26,7 @@ FEEDBACK = 4
 PAGE = 20
 
 STORAGE_PATH = ''
+
+NOT = 2
+AND = 1
+OR = 0

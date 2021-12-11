@@ -143,3 +143,63 @@ def nomalSearch(request = None,
 		result["author"] = author_bucket
 		result["field"] = field_bucket
 	return result
+
+def getBasicLogic():
+	return {
+		"bool": {
+				"must": []
+		}
+	}
+
+def getLogic(params):
+	logic = {
+		"bool": {
+				"must_not": [],
+				"should": []
+		}
+	}
+	for x in params:
+		if x['type'] != NOT:
+			continue
+		logic["bool"]["must_not"].append({
+			"match": {
+				x['key']: x['value']
+			}})
+	
+	now = getBasicLogic()
+
+	for x in params:
+		if x['type'] == NOT:
+			continue
+		elif x['type'] == AND:
+			now["bool"]["must"].append({
+			"match": {
+				x['key']: x['value']
+			}})
+		elif x['type'] == OR:
+			logic["bool"]["should"].append(now)
+			now = getBasicLogic()
+			now["bool"]["must"].append({
+			"match": {
+				x['key']: x['value']
+			}})
+		else:
+			print("Fuck Frontend!")
+	logic["bool"]["should"].append(now)
+	return logic
+
+def advanceSearch(params):
+	logic = getLogic(params)
+	mapping = {"query": logic}
+	origin = ES.search(index=ES_INDEX, body=mapping)
+	count_info = ES.count(index=ES_INDEX, body={"query" : mapping["query"]})
+	
+	count = count_info['count']
+	papers = origin["hits"]["hits"]
+	papers = [x["_source"] for x in papers]
+	result = {
+		"paper": papers,			# devide by page
+		"total": count,
+		"pages": (count + 20 - 1) // 20
+	}
+	return result
