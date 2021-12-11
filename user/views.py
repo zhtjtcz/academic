@@ -327,3 +327,12 @@ def get_profile(request):
         with open(imagepath, 'rb') as f:
             image_data = f.read()
         return HttpResponse(image_data,  content_type="image/png")
+
+
+@csrf_exempt
+def find_scholar(request):
+    if request.method != 'POST':
+        return JsonResponse({'result': ERROR, 'message': r'????'})
+    data_json = json.loads(request.body)
+    res = [x.to_dic() for x in Scholar.objects.filter(realname__icontains=data_json['name'])]
+    return JsonResponse({'result': ACCEPT, 'message': r'获取成功! ', 'list': res})
