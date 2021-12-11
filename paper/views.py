@@ -140,6 +140,12 @@ def get_hot_field(request):
 @csrf_exempt
 def get_hot_keyword(request):
 	result = Redis.zrevrange(name = "keyword", start = 1, end = 10, withscores = True, score_cast_func = float)
+	result = [{list(i[0].split(MAGIC))[1]:i[1]} for i in result]
+	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'hot': result})
+
+@csrf_exempt
+def get_hot_paper(request):
+	result = Redis.zrevrange(name = "paper", start = 1, end = 10, withscores = True, score_cast_func = float)
 	result = [{i[0]:i[1]} for i in result]
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'hot': result})
 
@@ -179,6 +185,27 @@ def get_papers(origin):
 		result.append(dic)
 	return result
 
+@csrf_exempt
+def read_paper(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'错误'})
+	data_json = json.loads(request.body)
+	id = int(data_json['id'])
+	title = data_json['title']
+	value = str(id) + MAGIC + title
+	Redis.zincrby(name = "paper", value = value, amount = 1)
+	return JsonResponse({'result': ACCEPT, 'message': r'成功！'})
+
+@csrf_exempt
+def get_reads(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'错误'})
+	data_json = json.loads(request.body)
+	id = int(data_json['id'])
+	title = data_json['title']
+	value = str(id) + MAGIC + title
+	reads = Redis.zscore(name = "paper", value = value)
+	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'reads': int(reads)})
 
 @csrf_exempt
 def favor(request):
