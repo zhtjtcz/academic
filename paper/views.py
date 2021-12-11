@@ -137,6 +137,12 @@ def get_hot_field(request):
 	result = [{i[0]:i[1]} for i in result]
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'hot': result})
 
+@csrf_exempt
+def get_hot_keyword(request):
+	result = Redis.zrevrange(name = "keyword", start = 1, end = 10, withscores = True, score_cast_func = float)
+	result = [{i[0]:i[1]} for i in result]
+	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'hot': result})
+
 def get_paper(id):
 	x = Paper.objects.get(id = id)
 	dic = {
