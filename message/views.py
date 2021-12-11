@@ -1,11 +1,13 @@
 import os
+import random
+import time
 
 from django import forms
 from django.shortcuts import render
 
 from academic.settings import MEDIA_ROOT
 from message.models import Message
-from django.http import JsonResponse, FileResponse
+from django.http import JsonResponse, FileResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from academic.values import *
 from user.models import *
@@ -18,12 +20,13 @@ from paper.models import *
 
 # Create your views here.
 
-def create_message(type, uid, pid, title, content=''):
+def create_message(type, uid, pid, title, content='', url=''):
 	message = Message()
 	message.uid = uid
 	message.pid = pid
 	message.type = type
 	message.title = title
+	message.url = url
 	message.date = datetime.now()
 	user = User.objects.get(id=uid)
 
@@ -58,7 +61,17 @@ def feedback(request):
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 		data_json = json.loads(request.body)
 		content = data_json.get('content', '')
-		create_message(FEEDBACK, id, 0, data_json.get('title', ''), content)
+		file = request.FILES.get('file', None)
+		filename = ''
+		if file:
+			_, type = os.path.splitext(file.name)
+			if type != '.jpg' and type != '.png':
+				return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
+			filename = "m" + str(id) + "_" + str(random.Random(time.localtime()).randint(0, 1000)) + type
+			with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
+				for chunk in file.chunks():
+					destination.write(chunk)
+		create_message(FEEDBACK, id, 0, data_json.get('title', ''), content, filename)
 		return JsonResponse({'result': ACCEPT, 'message': r'反馈成功！'})
 
 
@@ -147,20 +160,11 @@ def reply(request):
 	data_json = json.loads(request.body)
 	id = int(data_json['id'])
 	reply = data_json['reply']
-	# TODO img
-	file = request.FILES.get('file', None)
-	if file:
-		_, type = os.path.splitext(file.name)
-		if type != '.jpg' and type != '.png':
-			return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
-		filename = "m" + str(id) + type
-		user.save()
-		with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
-			for chunk in file.chunks():
-				destination.write(chunk)
-	
+
+
 	message = Message.objects.get(id = id)
 	message.isdeal = True
+
 	message.save()
 	# Update the message
 
@@ -184,7 +188,6 @@ def deal_message(request):
 
 @csrf_exempt
 def deal_claim(request):
-	# TODO 要加一个（可选）的拒绝理由
 	id = check_session(request)
 	if id == 0:
 		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
@@ -224,7 +227,17 @@ def appeal_user(request):
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 		data_json = json.loads(request.body)
 		uid = int(data_json['uid'])
-		create_message(APPEAL_IDENTITY, uid, 0, data_json.get('title', ''), data_json.get('content', ''))
+		file = request.FILES.get('file', None)
+		filename = ''
+		if file:
+			_, type = os.path.splitext(file.name)
+			if type != '.jpg' and type != '.png':
+				return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
+			filename = "m" + str(id) + "_" + str(random.Random(time.localtime()).randint(0, 1000)) + type
+			with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
+				for chunk in file.chunks():
+					destination.write(chunk)
+		create_message(APPEAL_IDENTITY, uid, 0, data_json.get('title', ''), data_json.get('content', ''), filename)
 		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
 
 @csrf_exempt
@@ -236,7 +249,17 @@ def appeal_paper(request):
 		data_json = json.loads(request.body)
 		uid = int(data_json['uid'])
 		pid = int(data_json['pid'])
-		create_message(APPEAL_PAPER, uid, pid, data_json.get('title', ''))
+		file = request.FILES.get('file', None)
+		filename = ''
+		if file:
+			_, type = os.path.splitext(file.name)
+			if type != '.jpg' and type != '.png':
+				return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
+			filename = "m" + str(id) + "_" + str(random.Random(time.localtime()).randint(0, 1000)) + type
+			with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
+				for chunk in file.chunks():
+					destination.write(chunk)
+		create_message(APPEAL_PAPER, uid, pid, data_json.get('title', ''), filename)
 		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
 
 
@@ -262,4 +285,23 @@ def upload_file(request):
 def download_file(request):
 	if request.method != 'POST':
 		return JsonResponse({'result': ERROR, 'message': r'????'})
+
+
+@csrf_exempt
+def look_feedback_img(request):
+	if request.method == 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'????'})
+	data = request.GET
+	file_name = data.get("file_name")
+	imagepath = os.path.join(MEDIA_ROOT, file_name).replace('\\', '/')  # 图片路径
+	try:
+		# with open(imagepath, 'rb') as f:
+		f = open(imagepath, 'rb')
+		image_data = f.read()
+		return HttpResponse(image_data, content_type="image/" + file_name[-3:])
+	except Exception as e:
+		imagepath = os.path.join(MEDIA_ROOT, 'default_profile.png').replace('\\', '/')  # 图片路径
+		with open(imagepath, 'rb') as f:
+			image_data = f.read()
+		return HttpResponse(image_data, content_type="image/png")
 
