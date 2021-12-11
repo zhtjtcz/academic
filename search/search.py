@@ -109,6 +109,7 @@ def nomalSearch(request = None,
 			"query": keyword,
 			"minimum_should_match": "75%"
 		}
+		Redis.zincrby(name = "keyword", value = keyword, amount = 1)
 	origin = ES.search(index=ES_INDEX, body=mapping)
 	count_info = ES.count(index=ES_INDEX, body={"query" : mapping["query"]})
 	count = count_info['count']
