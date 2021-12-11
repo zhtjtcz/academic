@@ -207,8 +207,10 @@ def get_favor_list(request):
 	data_json = json.loads(request.body)
 	begin = int(data_json['begin'])
 	end = int(data_json['end'])
-	# res = [x for x in Favor.objects.filter(uid=id)][begin:end]
-	res = [Paper.objects.filter(id=i.pid).values() for i in Favor.objects.filter(uid=id)[begin:end]]
+	res = [x.to_dic() for x in Favor.objects.filter(uid=id)]
+	for x in res:
+		x['paper'] = get_paper(x.pid)
+	
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'list': res})
 
 @csrf_exempt
