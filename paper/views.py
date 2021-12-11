@@ -205,6 +205,8 @@ def get_reads(request):
 	title = data_json['title']
 	value = str(id) + MAGIC + title
 	reads = Redis.zscore(name = "paper", value = value)
+	if reads == None:
+		reads = 0
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'reads': int(reads)})
 
 @csrf_exempt
