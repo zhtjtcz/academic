@@ -148,6 +148,7 @@ def reply(request):
 	id = int(data_json['id'])
 	reply = data_json['reply']
 	# TODO img
+	file = request.FILES.get('file', None)
 	
 	message = Message.objects.get(id = id)
 	message.isdeal = True

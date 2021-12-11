@@ -202,8 +202,8 @@ def get_favor_list(request):
 	if id == 0:
 		return JsonResponse({'result': ERROR, 'message': r'请先登录'})
 	data_json = json.loads(request.body)
-	begin = data_json['begin']
-	end = data_json['end']
+	begin = int(data_json['begin'])
+	end = int(data_json['end'])
 	res = Favor.objects.filter(uid=id).all()[begin:end]
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'list': res})
 
