@@ -124,9 +124,11 @@ def get_feedbacks(request):
 	origin = [x for x in Feedback.objects.filter(uid = id)]
 	feedbacks = []
 	for x in origin:
+		message = Message.objects.get(id = x.mid)
 		feedbacks.append({
 			'id': x.id,
 			'type': x.type,
+			'origin': message.content,
 			'reply': x.reply,
 			'isdeal': x.isdeal,
 			'date': str(x.date)[:19],
