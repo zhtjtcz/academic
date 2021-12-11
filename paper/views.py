@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import render
 from paper.models import *
 from django.http import JsonResponse
@@ -184,6 +185,10 @@ def favor(request):
 	paper = data_json['paper']
 	paper_id = create_paper(paper)
 	Favor.objects.create(uid=id, pid=paper_id).save()
+	with transaction.atomic():
+		p = Paper.objects.get(id=paper_id)
+		p.favors += 1
+		p.save()
 	return JsonResponse({'result': ACCEPT, 'message': r'收藏成功！'})
 
 
@@ -212,6 +217,10 @@ def undo_favor(request):
 	data_json = json.loads(request.body)
 	paper_id = data_json['pid']
 	Favor.objects.filter(uid=id, pid=paper_id).delete()
+	with transaction.atomic():
+		p = Paper.objects.get(id=paper_id)
+		p.favors -= 1
+		p.save()
 	return JsonResponse({'result': ACCEPT, 'message': r'取消成功！'})
 
 
