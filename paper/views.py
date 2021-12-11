@@ -155,7 +155,7 @@ def get_hot_paper(request):
 		else:
 			clear.append(x)
 	result = [{
-				'title': Paper.objects.get(id = i[0]),
+				'title': Paper.objects.get(id = i[0]).title,
 				'id': i[0],
 				'hot': int(i[1]),
 			} for i in clear]
