@@ -20,32 +20,33 @@ class Paper(models.Model):
 
 
 class AuthorInfo(models.Model):
-	pid = models.IntegerField()
-	author = models.CharField(max_length=50)
-	rank = models.IntegerField()
+    pid = models.IntegerField()
+    author = models.CharField(max_length=50)
+    rank = models.IntegerField()
 
 
 class Claim(models.Model):
-	uid = models.IntegerField()
-	pid = models.IntegerField()
+    uid = models.IntegerField()
+    pid = models.IntegerField()
 
 
 class Favor(models.Model):
-	uid = models.IntegerField()
-	pid = models.IntegerField()
+    uid = models.IntegerField()
+    pid = models.IntegerField()
 
-	def to_dic(self):
-		return {'uid': self.uid, 'pid': self.pid}
+    def to_dic(self):
+        return {'uid': self.uid, 'pid': self.pid}
+
 
 class Comment(models.Model):
-	id = models.AutoField(primary_key=True)
-	pid = models.IntegerField()
-	uid = models.IntegerField()
-	time = models.CharField(max_length = 50)
-	comment = models.TextField(null=True, blank=True)
-	reply = models.IntegerField()
-	replyuid = models.IntegerField(null=True, blank=True, default=0)
-	replyname = models.CharField(max_length = 50, null=True, blank=True, default='')
+    id = models.AutoField(primary_key=True)
+    pid = models.IntegerField()
+    uid = models.IntegerField()
+    time = models.CharField(max_length=50)
+    comment = models.TextField(null=True, blank=True)
+    reply = models.IntegerField()
+    replyuid = models.IntegerField(null=True, blank=True, default=0)
+    replyname = models.CharField(max_length=50, null=True, blank=True, default='')
 
 
 class Relation(models.Model):
@@ -54,4 +55,4 @@ class Relation(models.Model):
     times = models.IntegerField()
 
     def to_dic(self):
-		return {'name': self.name2, 'value': self.times}
+        return {'name': self.name2, 'value': self.times}
