@@ -10,4 +10,6 @@ urlpatterns = [
 	path('download_file', download_file),
 	path('appeal_user', appeal_user),
 	path('appeal_paper', appeal_paper),
+	path('reply', reply),
+	path('get_feedbacks', get_feedbacks),
 ]
