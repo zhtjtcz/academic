@@ -45,3 +45,12 @@ def del_history(request):
 		history.pop(id)
 		request.session['history'] = history
 		return JsonResponse({'result':ACCEPT, 'message': r'已删除'})
+
+@csrf_exempt
+def advance(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'错误'})
+	data_json = json.loads(request.body)
+	params = data_json.get('params', [])
+	result = advanceSearch(params)
+	return JsonResponse({'result': ACCEPT, 'message': result})
