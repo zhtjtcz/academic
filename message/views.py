@@ -333,7 +333,7 @@ def cancel_claim_paper(request):
 	uid = data_json.get('user', 0)
 	if uid == 0:
 		uid = request.session['user']
-	name = Scholar.objects.get(uid=uid)
+	name = Scholar.objects.get(uid=uid).realname
 	author_list = [i.author for i in AuthorInfo.objects.filter(pid=pid)]
 	author_list.remove(name)
 	for author_name in author_list:
