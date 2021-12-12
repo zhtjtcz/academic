@@ -48,6 +48,7 @@ def create_paper(info):
 @csrf_exempt
 def claim_paper(request):
 	final_success = True
+	one_success = False
 	if request.method == 'POST':
 		if check_session(request) == 0:
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
@@ -83,6 +84,7 @@ def claim_paper(request):
 			if not success:
 				final_success = False
 				continue
+			one_success = True
 			for i in range(len(authors)):
 				for j in range(len(authors)):
 					if i == j:
@@ -102,8 +104,10 @@ def claim_paper(request):
 						Relation.objects.create(name1=authors[j], name2=authors[i], times=1)
 		if final_success:
 			return JsonResponse({'result': ACCEPT, 'message': r'已完成认领！'})
-		else:
+		elif one_success:
 			return JsonResponse({'result': ERROR, 'message': r'文章没有全部认领！'})
+		else:
+			return JsonResponse({'result': 2, 'message': r'所有文章认领失败！'})
 
 @csrf_exempt
 def download(request):
