@@ -47,6 +47,7 @@ def create_paper(info):
 
 @csrf_exempt
 def claim_paper(request):
+	final_success = True
 	if request.method == 'POST':
 		if check_session(request) == 0:
 			return JsonResponse({'result': ERROR, 'message': r'请先登录'})
@@ -59,7 +60,9 @@ def claim_paper(request):
 			else:
 				pid = Paper.objects.get(id = int(paper['id'])).id
 			if Claim.objects.filter(uid = uid, pid = pid).exists() == True:
-				return JsonResponse({'result': ERROR, 'message': r'您已认领该论文！'})
+				# return JsonResponse({'result': ERROR, 'message': r'您已认领该论文！'})
+				final_success = False
+				continue
 			if Claim.objects.filter(uid = uid, pid = pid).exists() == False:
 				claim = Claim(uid = uid, pid = pid)
 				claim.save()
@@ -78,7 +81,8 @@ def claim_paper(request):
 					success = True
 					break
 			if not success:
-				return JsonResponse({'result': ERROR, 'message': r'认领失败！'})
+				final_success = False
+				continue
 			for i in range(len(authors)):
 				for j in range(len(authors)):
 					if i == j:
@@ -96,7 +100,10 @@ def claim_paper(request):
 						r.save()
 					else:
 						Relation.objects.create(name1=authors[j], name2=authors[i], times=1)
-		return JsonResponse({'result': ACCEPT, 'message': r'已完成认领！'})
+		if final_success:
+			return JsonResponse({'result': ACCEPT, 'message': r'已完成认领！'})
+		else:
+			return JsonResponse({'result': ERROR, 'message': r'文章没有全部认领！'})
 
 @csrf_exempt
 def download(request):
