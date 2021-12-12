@@ -26,13 +26,13 @@ def getCountData(field = "", string = "", bucket = ""):
 		"size": 0,
 		"aggs": {
             "result": {
-            "terms": {
-                "field": bucket,
-                "size": 50,
-                "order": {
-                    "_count": "desc"
-                	}
-            	}
+				"terms": {
+					"field": bucket,
+					"size": 50,
+					"order": {
+						"_count": "desc"
+						}
+				}
         	}
    		}
 	}
@@ -50,7 +50,7 @@ def getCountData(field = "", string = "", bucket = ""):
 def nomalSearch(request = None,
 				title = "", author = "", abstract = "",  doi = "", field = "", keyword = "",
 				page = 1, limit = 20,
-				sorted = 0):
+				sorted = 0, group = []):
 	mapping = {
 		"query": {
 			"match": {}
@@ -110,6 +110,11 @@ def nomalSearch(request = None,
 			"minimum_should_match": "75%"
 		}
 		Redis.zincrby(name = "keyword", value = keyword, amount = 1)
+	
+	if group != []:
+		logic = getLogic(group)
+		mapping["post_filter"] = logic
+
 	origin = ES.search(index=ES_INDEX, body=mapping)
 	count_info = ES.count(index=ES_INDEX, body={"query" : mapping["query"]})
 	count = count_info['count']
