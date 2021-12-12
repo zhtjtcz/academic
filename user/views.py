@@ -21,6 +21,7 @@ import json
 from hashlib import md5
 import re
 from academic.settings import Redis
+import difflib
 
 @csrf_exempt
 def test(request):
@@ -84,6 +85,24 @@ def register(request):
         user = User(username=username, password=password, email=email)
         user.save()
         return JsonResponse({'result': ACCEPT, 'message': r'注册成功'})
+
+@csrf_exempt
+def jump(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'错误'})
+	data_json = json.loads(request.body)
+	id = int(data_json['id'])
+	name = data_json['name']
+	if Claim.objects.filter(pid = id).exists() == False:
+		return JsonResponse({'result': ERROR, 'message':r'查无此人'})
+	claims = Claim.objects.filter(pid = id)
+	for x in claims:
+		scholar = Scholar.objects.get(uid = x.uid)
+		r = difflib.SequenceMatcher(lambda x:x == " ", name, scholar.realname).ratio()
+		if r >= 0.8:
+			return JsonResponse({'result': ACCEPT, 'message':r'获取成功', 'id': scholar.uid})
+	return JsonResponse({'result': ERROR, 'message':r'查无此人'})
+
 
 @csrf_exempt
 def get_scholar_id(request):
