@@ -13,4 +13,5 @@ urlpatterns = [
 	path('reply', reply),
 	path('get_feedbacks', get_feedbacks),
 	path('look_feedback_img', look_feedback_img),
+	path('cancel_claim_paper',cancel_claim_paper )
 ]
