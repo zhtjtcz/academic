@@ -22,7 +22,7 @@ from paper.models import *
 
 # Create your views here.
 
-def create_message(type, uid, pid, title, content='', url='', contact=''):
+def create_message(type, uid, pid, title, content='', url='', contact='', request = None):
 	message = Message()
 	message.uid = uid
 	message.pid = pid
@@ -51,7 +51,8 @@ def create_message(type, uid, pid, title, content='', url='', contact=''):
 	
 	feedback = Feedback()
 	feedback.date = datetime.now()
-	feedback.uid = uid
+	id = check_session(request)
+	feedback.uid = id
 	feedback.mid = message.id
 	feedback.type = type
 	feedback.reply = '您的申诉已提交，请等待管理员处理'	if type in [APPEAL_IDENTITY, APPEAL_PAPER] else '您的反馈已提交，请等待管理员处理'
@@ -78,7 +79,7 @@ def feedback(request):
 			with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
 				for chunk in file.chunks():
 					destination.write(chunk)
-		create_message(FEEDBACK, id, 0, data_json.get('title', ''), content, filename, contact)
+		create_message(FEEDBACK, id, 0, data_json.get('title', ''), content, filename, contact, request = request)
 		return JsonResponse({'result': ACCEPT, 'message': r'反馈成功！'})
 
 
@@ -251,7 +252,7 @@ def appeal_user(request):
 				for chunk in file.chunks():
 					destination.write(chunk)
 		contact = data_json.get('contact', '')
-		create_message(APPEAL_IDENTITY, uid, 0, data_json.get('title', ''), data_json.get('content', ''), filename, contact)
+		create_message(APPEAL_IDENTITY, uid, 0, data_json.get('title', ''), data_json.get('content', ''), filename, contact, request = request)
 		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
 
 @csrf_exempt
@@ -277,7 +278,7 @@ def appeal_paper(request):
 					destination.write(chunk)
 		contact = data_json.get('contact', '')
 		content = data_json.get('content', '')
-		create_message(APPEAL_PAPER, uid, pid, data_json.get('title', ''), content, filename, contact)
+		create_message(APPEAL_PAPER, uid, pid, data_json.get('title', ''), content, filename, contact, request = request)
 		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
 
 
