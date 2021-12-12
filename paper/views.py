@@ -66,9 +66,9 @@ def claim_paper(request):
 				user = User.objects.get(id = uid)
 				user.scholar = True
 				user.save()
-				paper = Paper.objects.get(id = pid)
+				paper_ = Paper.objects.get(id = pid)
 				scholar = Scholar.objects.get(uid = uid)
-				scholar.cite += paper.cite
+				scholar.cite += paper_.cite
 				scholar.save()
 			authors = paper['author']
 			success = False
