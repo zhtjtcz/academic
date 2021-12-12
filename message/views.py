@@ -275,7 +275,8 @@ def appeal_paper(request):
 				for chunk in file.chunks():
 					destination.write(chunk)
 		contact = data_json.get('contact', '')
-		create_message(APPEAL_PAPER, uid, pid, data_json.get('title', ''), filename, contact)
+		content = data_json.get('content', '')
+		create_message(APPEAL_PAPER, uid, pid, data_json.get('title', ''), content, filename, contact)
 		return JsonResponse({'result': ACCEPT, 'message': r'举报成功！'})
 
 
