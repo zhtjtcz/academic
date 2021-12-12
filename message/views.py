@@ -4,6 +4,7 @@ import time
 import uuid
 
 from django import forms
+from django.db import transaction
 from django.shortcuts import render
 
 from academic.settings import MEDIA_ROOT
@@ -321,4 +322,36 @@ def look_feedback_img(request):
 		with open(imagepath, 'rb') as f:
 			image_data = f.read()
 		return HttpResponse(image_data, content_type="image/png")
+
+
+@csrf_exempt
+def cancel_claim_paper(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'????'})
+	data_json = json.loads(request.body)
+	pid = data_json['pid']
+	uid = data_json.get('user', 0)
+	if uid == 0:
+		uid = request.session['user']
+	name = Scholar.objects.get(uid=uid)
+	author_list = [i.author for i in AuthorInfo.objects.filter(pid=pid)]
+	author_list.remove(name)
+	for author_name in author_list:
+		r1 = Relation.objects.get(name1=name, name2=author_name)
+		if r1.times > 1:
+			r1.times -= 1
+			r1.save()
+		else:
+			r1.delete()
+		r2 = Relation.objects.get(name1=author_name, name2=name)
+		if r2.times > 1:
+			r2.times -= 1
+			r2.save()
+		else:
+			r2.delete()
+	Claim.objects.get(uid=uid, pid=pid).delete()
+	user = User.objects.get(uid=uid)
+	user.scholar = 0
+	user.save()
+	return HttpResponse({'result': ACCEPT, 'message': r'取消成功！'})
 
