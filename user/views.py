@@ -342,5 +342,9 @@ def find_scholar(request):
     if request.method != 'POST':
         return JsonResponse({'result': ERROR, 'message': r'????'})
     data_json = json.loads(request.body)
-    res = [x.to_dic() for x in Scholar.objects.filter(realname__icontains=data_json['name'])]
+    res = []
+    for i in Scholar.objects.filter(realname__icontains=data_json['name']):
+        if User.objects.get(id=i.uid).scholar:
+            res.append(i.to_dic())
+    # res = [x.to_dic() for x in Scholar.objects.filter(realname__icontains=data_json['name'])]
     return JsonResponse({'result': ACCEPT, 'message': r'获取成功! ', 'list': res})
