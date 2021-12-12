@@ -351,7 +351,7 @@ def cancel_claim_paper(request):
 			r2.delete()
 	Claim.objects.get(uid=uid, pid=pid).delete()
 	if not Claim.objects.filter(uid=uid).exists():
-		user = User.objects.get(uid=uid)
+		user = User.objects.get(id=uid)
 		user.scholar = 0
 		user.save()
 	return HttpResponse({'result': ACCEPT, 'message': r'取消成功！'})
