@@ -75,7 +75,7 @@ def claim_paper(request):
 				scholar.save()
 			authors = paper['author']
 			success = False
-			realname = Scholar.objects.get(uid=uid).lower()
+			realname = Scholar.objects.get(uid=uid).realname.lower()
 			for i in authors:
 				if i.lower() == realname:
 					success = True
