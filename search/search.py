@@ -104,7 +104,7 @@ def nomalSearch(request = None,
 		}
 	elif len(keyword) > 0:
 		search_field = "keyword"
-		string = field
+		string = keyword
 		mapping["query"]["match"]["keyword"] = {
 			"query": keyword,
 			"minimum_should_match": "75%"
