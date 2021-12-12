@@ -310,11 +310,13 @@ def get_favor_list(request):
 	data_json = json.loads(request.body)
 	begin = int(data_json['begin'])
 	end = int(data_json['end'])
-	res = [x.to_dic() for x in Favor.objects.filter(uid=id)][begin:end]
+
+	res = [x.to_dic() for x in Favor.objects.filter(uid=id)]
+	len_ = len(res)
 	for x in res:
 		x['paper'] = get_paper(x['pid'])
 	
-	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'list': res})
+	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'list': res[begin:end], 'len': len_})
 
 @csrf_exempt
 def get_comments(request):
