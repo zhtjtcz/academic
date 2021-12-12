@@ -33,7 +33,7 @@ def test(request):
 def islogin(request):
 	if check_session(request) != 0:
 		user = User.objects.get(id = check_session(request))
-		return JsonResponse({'result': ACCEPT, 'scholar': user.scholar})
+		return JsonResponse({'result': ACCEPT, 'scholar': user.scholar, 'admin': user.admin})
 	else:
 		return JsonResponse({'result': ERROR})
 
