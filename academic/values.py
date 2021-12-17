@@ -16,7 +16,8 @@ SALT4 = '7'
 ES = Elasticsearch(
 	hosts = '123.60.215.20:9128'
 )
-ES_INDEX = 'marvolo'
+
+ES_INDEX = 'main'
 
 APPEAL_PAPER = 1
 APPEAL_IDENTITY = 2
