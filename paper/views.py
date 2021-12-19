@@ -411,7 +411,7 @@ def comment(request):
 				feedback.save()
 	else:
 		feedback = Feedback(
-			uid = int(data_json.get('reply', 0)),
+			uid = int(data_json.get('replyuid', 0)),
 			mid = pid,
 			type = RERLY,
 			reply = reply,
