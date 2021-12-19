@@ -402,7 +402,7 @@ def comment(request):
 				feedback = Feedback(
 					uid = x.uid,
 					mid = pid,
-					type = RERLY,
+					type = 5,
 					reply = reply,
 					isdeal = 1,
 					date = datetime.now(),
@@ -413,7 +413,7 @@ def comment(request):
 		feedback = Feedback(
 			uid = int(data_json.get('replyuid', 0)),
 			mid = pid,
-			type = RERLY,
+			type = 6,
 			reply = reply,
 			isdeal = 1,
 			date = datetime.now(),
