@@ -13,7 +13,7 @@ class Paper(models.Model):
     cite = models.IntegerField(default=0)
     url = models.TextField(null=True, blank=True)
     lang = models.CharField(max_length=20, null=True, blank=True)
-    doi = models.CharField(max_length=50, null=True, blank=True)
+    doi = models.CharField(max_length=200, null=True, blank=True)
     field = models.TextField(null=True, blank=True)
     download = models.IntegerField(default=0)
     favors = models.IntegerField(default=0)
