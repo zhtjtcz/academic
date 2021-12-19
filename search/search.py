@@ -60,44 +60,57 @@ def nomalSearch(request = None,
 			mapping["sort"].append({"cite": {"order": "asc" if sorted == 2 else "desc"}})
 	# Sort by some order
 
+	dic = {"type":1, "key": "", "value":""}
 	if len(title) > 0:
 		mapping["query"]["match"]["title"] = {
 			"query": title,
 			"minimum_should_match": "75%"
 		}
+		dic["key"] = "title"
+		dic["value"] = title
 	elif len(author) > 0:
 		mapping["query"]["match"]["author"] = {
 			"query": author,
 			"minimum_should_match": "75%"
 		}
+		dic["key"] = "author"
+		dic["value"] = author
 	elif len(abstract) > 0:
 		mapping["query"]["match"]["abstract"] = {
 			"query": abstract,
 			"minimum_should_match": "75%"
 		}
+		dic["key"] = "abstract"
+		dic["value"] = abstract
 	elif len(doi) > 0:
 		mapping["query"]["match"]["doi"] = {
 			"query": doi,
 			"minimum_should_match": "75%"
 		}
+		dic["key"] = "doi"
+		dic["value"] = doi
 	elif len(field) > 0:
 		mapping["query"]["match"]["field"] = {
 			"query": field,
 			"minimum_should_match": "75%"
 		}
+		dic["key"] = "field"
+		dic["value"] = field
 	elif len(keyword) > 0:
 		mapping["query"]["match"]["keyword"] = {
 			"query": keyword,
 			"minimum_should_match": "75%"
 		}
+		dic["key"] = "keyword"
+		dic["value"] = keyword
 		Redis.zincrby(name = "keyword", value = keyword, amount = 1)
 	
+	group = [dic] + group
 	if group != []:
 		logic = getLogic(group)
 		mapping["post_filter"] = logic
-
 	origin = ES.search(index=ES_INDEX, body=mapping)
-	count_info = ES.count(index=ES_INDEX, body={"query" : mapping["query"]})
+	count_info = ES.count(index=ES_INDEX, body={"query" : logic})
 	count = count_info['count']
 	
 	papers = origin["hits"]["hits"]
