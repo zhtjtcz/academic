@@ -196,8 +196,8 @@ def get_scholar_info(request):
 		origin = [x for x in Claim.objects.filter(uid = scholar.uid)]
 		papers = get_papers(origin)
 	
-	Redis.zincrby(name = "visit", value = author, amount = 1)
-	visit = Redis.zscore(name = "visit", value = author)
+	Redis.zincrby(name = "visit", value = id, amount = 1)
+	visit = Redis.zscore(name = "visit", value = id)
 
 	dic = {}
 	for i in papers:
