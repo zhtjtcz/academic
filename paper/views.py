@@ -89,9 +89,7 @@ def claim_paper(request):
 				scholar.cite += paper_.cite
 				scholar.save()
 			for i in range(len(authors)):
-				for j in range(len(authors)):
-					if i == j:
-						continue
+				for j in range(i+1, len(authors)):
 					if Relation.objects.filter(name1=authors[i], name2=authors[j]).exists():
 						r = Relation.objects.get(name1=authors[i], name2=authors[j])
 						r.times += 1
