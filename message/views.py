@@ -346,6 +346,11 @@ def cancel_claim_paper(request):
 	if uid == 0:
 		uid = request.session['user']
 	name = Scholar.objects.get(uid=uid).realname
+	scholar = Scholar.objects.get(uid=uid)
+	paper = Paper.objects.get(id = pid)
+	scholar.cite -= paper.cite
+	scholar.save()
+
 	author_list = [i.author for i in AuthorInfo.objects.filter(pid=pid)]
 	author_list.remove(name)
 	for author_name in author_list:
