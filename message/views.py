@@ -30,7 +30,7 @@ def create_message(type, uid, pid, title, content='', url='', contact='', reques
 	message.title = title
 	message.url = url
 	message.contact = contact
-	message.date = datetime.now()
+	message.date = str(datetime.now())
 	user = User.objects.get(id=uid)
 
 	if type == CLAIM_PAPER:
@@ -50,7 +50,7 @@ def create_message(type, uid, pid, title, content='', url='', contact='', reques
 	rid = message.id
 	
 	feedback = Feedback()
-	feedback.date = datetime.now()
+	feedback.date = str(datetime.now())
 	id = check_session(request)
 	feedback.uid = id
 	feedback.mid = message.id
