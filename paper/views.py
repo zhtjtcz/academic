@@ -432,5 +432,7 @@ def get_relation(request):
 	rs = Relation.objects.filter(name1=name)
 	if rs.exists():
 		res = [i.to_dic() for i in rs]
+	for x in res:
+		pass
 
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'list': res})

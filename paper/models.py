@@ -8,7 +8,7 @@ class Paper(models.Model):
     title = models.CharField(max_length=400)
     keyword = models.TextField(null=True, blank=True)
     abstract = models.TextField(null=True, blank=True)
-    venue = models.CharField(max_length=100, null=True, blank=True)
+    venue = models.CharField(max_length=400, null=True, blank=True)
     year = models.IntegerField(default=-1)
     cite = models.IntegerField(default=-1)
     url = models.TextField(null=True, blank=True)
