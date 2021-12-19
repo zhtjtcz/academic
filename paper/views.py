@@ -393,15 +393,16 @@ def comment(request):
 	if comment.replyuid:
 		comment.replyname = User.objects.get(id=comment.replyuid).username
 	comment.save()
+
 	if int(data_json.get('reply', 0)) == 0:
 		if Claim.objects.filter(pid = pid).exists() == True:
 			l = [x for x in Claim.objects.filter(pid = pid)]
 			for x in l:
 				feedback = Feedback(
 					uid = x.uid,
-					mid = 0,
+					mid = pid,
 					type = RERLY,
-					reply = r"您认领的论文下有一条新的回复",
+					reply = r"您认领的论文下有一条新的回复" + data_json.get('comment', ''),
 					isdeal = 1,
 					date = datetime.now(),
 					url = '',
@@ -410,9 +411,9 @@ def comment(request):
 	else:
 		feedback = Feedback(
 			uid = int(data_json.get('reply', 0)),
-			mid = 0,
+			mid = pid,
 			type = RERLY,
-			reply = r"您的评论下有一条新的回复",
+			reply = r"您的评论下有一条新的回复" + data_json.get('comment', ''),
 			isdeal = 1,
 			date = datetime.now(),
 			url = '',

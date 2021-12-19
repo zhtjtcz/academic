@@ -12,6 +12,7 @@ from message.models import Message
 from django.http import JsonResponse, FileResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from academic.values import *
+from academic.values import REPLY
 from user.models import *
 import json
 from academic.tools import check_session
@@ -126,16 +127,27 @@ def get_feedbacks(request):
 	origin = [x for x in Feedback.objects.filter(uid = id)]
 	feedbacks = []
 	for x in origin:
-		message = Message.objects.get(id = x.mid)
-		feedbacks.append({
-			'id': x.id,
-			'type': x.type,
-			'origin': message.content,
-			'reply': x.reply,
-			'isdeal': x.isdeal,
-			'date': str(x.date)[:19],
-			'url': x.url,
-		})
+		if x.type != REPLY:
+			message = Message.objects.get(id = x.mid)
+			feedbacks.append({
+				'id': x.id,
+				'type': x.type,
+				'origin': message.content,
+				'reply': x.reply,
+				'isdeal': x.isdeal,
+				'date': str(x.date)[:19],
+				'url': x.url,
+			})
+		else:
+			feedbacks.append({
+				'id': x.id,
+				'type': x.type,
+				'origin': x.content,
+				'reply': x.reply,
+				'isdeal': x.isdeal,
+				'date': str(x.date)[:19],
+				'url': x.url,
+			})
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'feedbacks': feedbacks})
 
 @csrf_exempt
