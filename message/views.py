@@ -12,7 +12,6 @@ from message.models import Message
 from django.http import JsonResponse, FileResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from academic.values import *
-from academic.values import REPLY
 from user.models import *
 import json
 from academic.tools import check_session
