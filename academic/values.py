@@ -32,3 +32,5 @@ STORAGE_PATH = ''
 NOT = 2
 AND = 1
 OR = 0
+
+ALPHA = 0.01
