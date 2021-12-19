@@ -105,10 +105,16 @@ def nomalSearch(request = None,
 		dic["value"] = keyword
 		Redis.zincrby(name = "keyword", value = keyword, amount = 1)
 	
-	group = [dic] + group
+	newGroup = [dic]
+	for x in group:
+		newGroup.append(x)
+		if x["type"] == OR:
+			newGroup.append(dic)
+	group = newGroup
 	if group != []:
 		logic = getLogic(group)
 		mapping["post_filter"] = logic
+	
 	origin = ES.search(index=ES_INDEX, body=mapping)
 	count_info = ES.count(index=ES_INDEX, body={"query" : logic})
 	count = count_info['count']
