@@ -394,7 +394,7 @@ def comment(request):
 		comment.replyname = User.objects.get(id=comment.replyuid).username
 	comment.save()
 
-	reply = User.objects.get(id = id).username + MAGIC + paper.title + MAGIC + data_json.get('comment', '')
+	reply = User.objects.get(id = id).username + MAGIC + paper['title'] + MAGIC + data_json.get('comment', '')
 	if int(data_json.get('reply', 0)) == 0:
 		if Claim.objects.filter(pid = pid).exists() == True:
 			l = [x for x in Claim.objects.filter(pid = pid)]
