@@ -55,7 +55,8 @@ def advance(request):
 	params = data_json.get('params', [])
 	page = int(data_json.get('page', 1))
 	limit = int(data_json.get('limits', 20))
-	result = advanceSearch(params, page, limit)
+	group = data_json.get('group', [])
+	result = advanceSearch(params, page, limit, group)
 	return JsonResponse({'result': ACCEPT, 'message': result})
 
 @csrf_exempt
