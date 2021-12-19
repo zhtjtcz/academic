@@ -141,6 +141,7 @@ def get_feedbacks(request):
 			username, title, reply = x.reply.split(MAGIC)
 			feedbacks.append({
 				'id': x.id,
+				'pid': x.mid,
 				'type': x.type,
 				'origin': x.reply,
 				'title': title,
