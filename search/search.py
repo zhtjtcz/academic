@@ -156,7 +156,10 @@ def getLogic(params):
 			continue
 		logic["bool"]["must_not"].append({
 			"match": {
-				x['key']: x['value']
+				x['key']: {
+					"query": x['value'],
+					"minimum_should_match": "75%"	
+				}
 			}})
 	
 	now = getBasicLogic()
@@ -167,14 +170,20 @@ def getLogic(params):
 		elif x['type'] == AND:
 			now["bool"]["must"].append({
 			"match": {
-				x['key']: x['value']
+				x['key']: {
+					"query": x['value'],
+					"minimum_should_match": "75%"	
+				}
 			}})
 		elif x['type'] == OR:
 			logic["bool"]["should"].append(now)
 			now = getBasicLogic()
 			now["bool"]["must"].append({
 			"match": {
-				x['key']: x['value']
+				x['key']: {
+					"query": x['value'],
+					"minimum_should_match": "75%"	
+				}
 			}})
 		else:
 			print("Fuck Frontend!")
