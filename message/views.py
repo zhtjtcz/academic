@@ -138,11 +138,14 @@ def get_feedbacks(request):
 				'url': x.url,
 			})
 		else:
+			username, title, reply = x.reply.split(MAGIC)
 			feedbacks.append({
 				'id': x.id,
 				'type': x.type,
 				'origin': x.reply,
-				'reply': x.reply,
+				'title': title,
+				'username': username,
+				'reply': reply,
 				'isdeal': x.isdeal,
 				'date': str(x.date)[:19],
 				'url': x.url,

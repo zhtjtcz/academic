@@ -394,6 +394,7 @@ def comment(request):
 		comment.replyname = User.objects.get(id=comment.replyuid).username
 	comment.save()
 
+	reply = User.objects.get(id=comment.replyuid).username + MAGIC + paper.title + MAGIC + data_json.get('comment', '')
 	if int(data_json.get('reply', 0)) == 0:
 		if Claim.objects.filter(pid = pid).exists() == True:
 			l = [x for x in Claim.objects.filter(pid = pid)]
@@ -402,7 +403,7 @@ def comment(request):
 					uid = x.uid,
 					mid = pid,
 					type = RERLY,
-					reply = data_json.get('comment', ''),
+					reply = reply,
 					isdeal = 1,
 					date = datetime.now(),
 					url = '',
@@ -413,7 +414,7 @@ def comment(request):
 			uid = int(data_json.get('reply', 0)),
 			mid = pid,
 			type = RERLY,
-			reply = data_json.get('comment', ''),
+			reply = reply,
 			isdeal = 1,
 			date = datetime.now(),
 			url = '',
