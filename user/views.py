@@ -245,8 +245,8 @@ def get_info(request):
     if id == 0:
         return JsonResponse({'result': ERROR, 'message': r'请先登录'})
     info = User.objects.get(id=id)
-    if not info.scholar:
-        return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
+    # if not info.scholar:
+    #     return JsonResponse({'result': ACCEPT, 'message': r'您还没有认证!'})
     return JsonResponse(
         {'result': ACCEPT, 'message': r'获取成功!', 'username': info.username, 'email': info.email, 'gender': info.gender,
          'area': info.area, 'phone': info.phone})
