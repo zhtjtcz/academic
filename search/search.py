@@ -13,16 +13,9 @@ def update_hot(bucket, result):
 		Redis.zincrby(name = bucket, value = i['key'], amount = i['doc_count'])
 	# Update the hot in the redis
 
-def getCountData(field = "", string = "", bucket = ""):
+def getCountData(query = {}, bucket = ""):
 	mapping = {
-		"query": {
-			"match": {
-				field : {
-					"query": string,
-					"minimum_should_match": "75%"
-				}
-			}
-		},
+		"query": query,
 		"size": 0,
 		"aggs": {
             "result": {
@@ -68,43 +61,31 @@ def nomalSearch(request = None,
 	# Sort by some order
 
 	if len(title) > 0:
-		search_field = "title"
-		string = title
 		mapping["query"]["match"]["title"] = {
 			"query": title,
 			"minimum_should_match": "75%"
 		}
 	elif len(author) > 0:
-		search_field = "author"
-		string = author
 		mapping["query"]["match"]["author"] = {
 			"query": author,
 			"minimum_should_match": "75%"
 		}
 	elif len(abstract) > 0:
-		search_field = "abstract"
-		string = abstract
 		mapping["query"]["match"]["abstract"] = {
 			"query": abstract,
 			"minimum_should_match": "75%"
 		}
 	elif len(doi) > 0:
-		search_field = "doi"
-		string = doi
 		mapping["query"]["match"]["doi"] = {
 			"query": doi,
 			"minimum_should_match": "75%"
 		}
 	elif len(field) > 0:
-		search_field = "field"
-		string = field
 		mapping["query"]["match"]["field"] = {
 			"query": field,
 			"minimum_should_match": "75%"
 		}
 	elif len(keyword) > 0:
-		search_field = "keyword"
-		string = keyword
 		mapping["query"]["match"]["keyword"] = {
 			"query": keyword,
 			"minimum_should_match": "75%"
@@ -128,23 +109,10 @@ def nomalSearch(request = None,
 		"pages": (count + limit - 1) // limit
 	}
 
-	if check_session(request) and page == 1:
-		history = request.session.get('history', [])
-		history.append({
-				"field": search_field,
-				"string": string,
-				"time": str(datetime.now())[:19],
-			}
-		)
-		if len(history) > 5:
-			history.pop(0)
-		request.session['history'] = history
-		# Save the search history
-
 	if page == 1:
-		year_bucket = getCountData(field = search_field, string = string, bucket = "year")
-		author_bucket = getCountData(field = search_field, string = string, bucket = "author.raw")
-		field_bucket = getCountData(field = search_field, string = string, bucket = "field")
+		year_bucket = getCountData(query = mapping["query"], bucket = "year")
+		author_bucket = getCountData(query = mapping["query"], bucket = "author.raw")
+		field_bucket = getCountData(query = mapping["query"], bucket = "field")
 		result["year"] = year_bucket
 		result["author"] = author_bucket
 		result["field"] = field_bucket
@@ -194,13 +162,18 @@ def getLogic(params):
 	logic["bool"]["should"].append(now)
 	return logic
 
-def advanceSearch(params, page, limit):
+def advanceSearch(params, page, limit, group = []):
 	logic = getLogic(params)
 	mapping = {
 		"query": logic,
 		"from": limit*(page-1),
 		"size": limit
 	}
+
+	if group != []:
+		logic = getLogic(group)
+		mapping["post_filter"] = logic
+
 	origin = ES.search(index=ES_INDEX, body = mapping)
 	count_info = ES.count(index=ES_INDEX, body = {"query" : mapping["query"]})
 	
@@ -212,4 +185,13 @@ def advanceSearch(params, page, limit):
 		"total": count,
 		"pages": (count + 20 - 1) // 20
 	}
+
+	if page == 1:
+		year_bucket = getCountData(query = mapping["query"], bucket = "year")
+		author_bucket = getCountData(query = mapping["query"], bucket = "author.raw")
+		field_bucket = getCountData(query = mapping["query"], bucket = "field")
+		result["year"] = year_bucket
+		result["author"] = author_bucket
+		result["field"] = field_bucket
+	
 	return result
