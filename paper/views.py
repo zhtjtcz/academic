@@ -10,7 +10,7 @@ import json
 import arxiv
 import random
 from academic.settings import Redis
-
+import difflib
 
 # Create your views here.
 
@@ -432,7 +432,13 @@ def get_relation(request):
 	rs = Relation.objects.filter(name1=name)
 	if rs.exists():
 		res = [i.to_dic() for i in rs]
+	scholar = [(i.realname.lower(), i.uid) for i in Scholar.objects.all()]
 	for x in res:
-		pass
-
+		name = x['name'].lower()
+		for y in scholar:
+			if difflib.SequenceMatcher(lambda x:x == " ", name, y[0]).ratio() >= 0.9:
+				x['id'] = y[1]
+				break
+		else:
+			x['id'] = 0
 	return JsonResponse({'result': ACCEPT, 'message': r'获取成功！', 'list': res})
