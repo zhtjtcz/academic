@@ -77,7 +77,7 @@ def register(request):
             return JsonResponse({'result': ERROR, 'message': r'用户名格式不正确'})
         if not re.match('^((?=.*[0-9].*)(?=.*[A-Z].*)|(?=.*[0-9].*)(?=.*[a-z].*)|(?=.*[a-z].*)(?=.*[A-Z].*)).{6,16}$',
                         password):
-            return JsonResponse({'result': ERROR, 'message': r'密码不合法'})
+            return JsonResponse({'result': ERROR, 'message': r'密码必须包含大写字母、小写字母、数字中的至少两种！'})
         if password != check_password:
             return JsonResponse({'result': ERROR, 'message': r'两次密码不一致'})
         password = password[:1] + SALT1 + password[1:2] + SALT2 + password[2:-2] + SALT3 + password[-2:-1] + SALT4 + \
