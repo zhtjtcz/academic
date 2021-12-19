@@ -57,3 +57,21 @@ def advance(request):
 	limit = int(data_json.get('limits', 20))
 	result = advanceSearch(params, page, limit)
 	return JsonResponse({'result': ACCEPT, 'message': result})
+
+@csrf_exempt
+def id_search(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'错误'})
+	data_json = json.loads(request.body)
+	id = int(data_json['id'])
+	mapping = {
+		"query": {
+			"match": {"id": id}
+		},
+		"from": 0,
+		"size": 1
+	}
+	origin = ES.search(index=ES_INDEX, body=mapping)
+	paper = origin["hits"]["hits"]
+	paper = [x["_source"] for x in paper]
+	return JsonResponse({'result': ACCEPT, 'paper': paper})
