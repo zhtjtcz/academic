@@ -141,7 +141,7 @@ def get_feedbacks(request):
 			feedbacks.append({
 				'id': x.id,
 				'type': x.type,
-				'origin': x.content,
+				'origin': x.reply,
 				'reply': x.reply,
 				'isdeal': x.isdeal,
 				'date': str(x.date)[:19],
