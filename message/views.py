@@ -356,6 +356,10 @@ def cancel_claim_paper(request):
 	scholar.save()
 
 	author_list = [i.author for i in AuthorInfo.objects.filter(pid=pid)]
+	for i in author_list:
+		if i.lower() == name:
+			name = i
+			break
 	author_list.remove(name)
 	for author_name in author_list:
 		r1 = Relation.objects.get(name1=name, name2=author_name)
