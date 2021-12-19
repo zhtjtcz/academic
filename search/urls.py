@@ -6,4 +6,5 @@ urlpatterns = [
 	path('advance', advance),
 	path('get_history', get_history),
 	path('del_history', del_history),
+	path('id_search', id_search),
 ]
