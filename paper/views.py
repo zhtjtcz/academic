@@ -434,6 +434,7 @@ def get_relation(request):
 	scholar = [(i.realname.lower(), i.uid) for i in Scholar.objects.all()]
 	for x in res:
 		name = x['name'].lower()
+		print(name)
 		for y in scholar:
 			if difflib.SequenceMatcher(lambda x:x == " ", name, y[0]).ratio() >= 0.9:
 				x['id'] = y[1]
