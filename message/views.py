@@ -360,7 +360,8 @@ def cancel_claim_paper(request):
 		if i.lower() == name:
 			name = i
 			break
-	author_list.remove(name)
+	while name in author_list:
+		author_list.remove(name)
 	for author_name in author_list:
 		r1 = Relation.objects.get(name1=name, name2=author_name)
 		if r1.times > 1:
@@ -374,6 +375,7 @@ def cancel_claim_paper(request):
 			r2.save()
 		else:
 			r2.delete()
+	# TODO
 	Claim.objects.get(uid=uid, pid=pid).delete()
 	if not Claim.objects.filter(uid=uid).exists():
 		user = User.objects.get(id=uid)
