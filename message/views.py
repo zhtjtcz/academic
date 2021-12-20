@@ -18,7 +18,7 @@ from academic.tools import check_session
 from datetime import datetime
 from message.models import *
 from paper.models import *
-
+import difflib
 
 # Create your views here.
 
@@ -354,10 +354,11 @@ def cancel_claim_paper(request):
 	paper = Paper.objects.get(id = pid)
 	scholar.cite -= paper.cite
 	scholar.save()
+	# Update Cite
 
 	author_list = [i.author for i in AuthorInfo.objects.filter(pid=pid)]
 	for i in author_list:
-		if i.lower() == name:
+		if difflib.SequenceMatcher(lambda x:x == " ", name, i).ratio() >= 0.9:
 			name = i
 			break
 	while name in author_list:
@@ -375,11 +376,13 @@ def cancel_claim_paper(request):
 			r2.save()
 		else:
 			r2.delete()
-	# TODO
+	# Update network
+	
 	Claim.objects.get(uid=uid, pid=pid).delete()
 	if not Claim.objects.filter(uid=uid).exists():
 		user = User.objects.get(id=uid)
 		user.scholar = 0
 		user.save()
-	return JsonResponse({'result': ACCEPT, 'message': r'取消成功！'})
+	# Cancel Claim
 
+	return JsonResponse({'result': ACCEPT, 'message': r'取消成功！'})

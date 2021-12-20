@@ -199,11 +199,20 @@ def advanceSearch(params, page, limit, group = []):
 	}
 
 	if group != []:
-		logic = getLogic(group)
-		mapping["post_filter"] = logic
+		mapping["post_filter"] = getLogic(group)
 
 	origin = ES.search(index=ES_INDEX, body = mapping)
-	count_info = ES.count(index=ES_INDEX, body = {"query" : mapping["query"]})
+	if group == []:
+		count_info = ES.count(index=ES_INDEX, body = {"query" : mapping["query"]})
+	else:
+		x = mapping["post_filter"]
+		y = mapping["query"]
+		print(x)
+		print(y)
+		now = getBasicLogic()
+		now["bool"]["must"].append(x)
+		now["bool"]["must"].append(y)
+		count_info = ES.count(index=ES_INDEX, body = {"query" : now})
 	
 	count = count_info['count']
 	papers = origin["hits"]["hits"]
