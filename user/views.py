@@ -1,6 +1,7 @@
 import os
 import random
 import time
+import uuid
 
 from django.shortcuts import render
 from django.http import JsonResponse, FileResponse, HttpResponse
@@ -368,3 +369,45 @@ def find_scholar(request):
             res.append(i.to_dic())
     # res = [x.to_dic() for x in Scholar.objects.filter(realname__icontains=data_json['name'])]
     return JsonResponse({'result': ACCEPT, 'message': r'获取成功! ', 'list': res})
+
+
+@csrf_exempt
+def upload_img(request):
+    if request.method != 'POST':
+        return JsonResponse({'result': ERROR, 'message': r'????'})
+    id = check_session(request)
+    if id == 0:
+        return JsonResponse({'result': ERROR, 'message': r'请先登录'})
+    file = request.FILES.get('file', None)
+    if not file:
+        return JsonResponse({'result': ERROR, 'message': r'上传失败！'})
+    file = request.FILES.get('file', None)
+    filename = ''
+    if file:
+        _, type = os.path.splitext(file.name)
+        if type != '.jpg' and type != '.png':
+            return JsonResponse({'result': ERROR, 'message': r'请上传JPG或PNG格式图片！'})
+        filename = "ma" + str(id) + "_" + str(uuid.uuid1()) + type
+        with open(os.path.join(MEDIA_ROOT, filename).replace('\\', '/'), "wb") as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+    return JsonResponse({'result': ACCEPT, 'message': r'上传成功！', 'url': r'/message/look_feedback_img?file_name='+filename})
+
+#
+# @csrf_exempt
+# def get_img(request):
+#     if request.method == 'POST':
+#         return JsonResponse({'result': ERROR, 'message': r'????'})
+#     data = request.GET
+#     file_name = data.get("file_name")
+#     imagepath = os.path.join(MEDIA_ROOT, file_name).replace('\\', '/')  # 图片路径
+#     try:
+#         # with open(imagepath, 'rb') as f:
+#         f = open(imagepath, 'rb')
+#         image_data = f.read()
+#         return HttpResponse(image_data, content_type="image/" + file_name[-3:])
+#     except Exception as e:
+#         imagepath = os.path.join(MEDIA_ROOT, 'default_profile.png').replace('\\', '/')  # 图片路径
+#         with open(imagepath, 'rb') as f:
+#             image_data = f.read()
+#         return HttpResponse(image_data, content_type="image/png")

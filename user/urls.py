@@ -20,4 +20,6 @@ urlpatterns = [
 	path('get_scholar_id', get_scholar_id),
 	path('find_scholar', find_scholar),
 	path('jump', jump),
+	path('upload_img', upload_img),
+	# path('get_img', get_img)
 ]
