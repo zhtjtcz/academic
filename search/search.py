@@ -43,7 +43,7 @@ def getCountData(query = {}, bucket = ""):
 def nomalSearch(request = None,
 				title = "", author = "", abstract = "",  doi = "", field = "", keyword = "",
 				page = 1, limit = 20,
-				sorted = 0, group = []):
+				sorted = 0, group = [], exact = False):
 	mapping = {
 		"query": {
 			"match": {}
@@ -69,12 +69,21 @@ def nomalSearch(request = None,
 		dic["key"] = "title"
 		dic["value"] = title
 	elif len(author) > 0:
-		mapping["query"]["match"]["author"] = {
-			"query": author,
-			"minimum_should_match": "75%"
-		}
-		dic["key"] = "author"
-		dic["value"] = author
+		if exact == False:
+			mapping["query"]["match"]["author"] = {
+				"query": author,
+				"minimum_should_match": "75%"
+			}
+			dic["key"] = "author"
+			dic["value"] = author
+		else:
+			print("!!")
+			mapping["query"]["match"]["author.raw"] = {
+				"query": author,
+				"minimum_should_match": "100%"
+			}
+			dic["key"] = "author.raw"
+			dic["value"] = author
 	elif len(abstract) > 0:
 		mapping["query"]["match"]["abstract"] = {
 			"query": abstract,
