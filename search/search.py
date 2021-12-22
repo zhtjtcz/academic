@@ -77,12 +77,17 @@ def nomalSearch(request = None,
 			dic["key"] = "author"
 			dic["value"] = author
 		else:
-			print("!!")
-			mapping["query"]["match"]["author.raw"] = {
-				"query": author,
-				"minimum_should_match": "100%"
+			mapping = {
+				"query": {
+					"match_phrase": {}
+				},
+				"from": limit*(page-1),
+				"size": limit
 			}
-			dic["key"] = "author.raw"
+			mapping["query"]["match_phrase"]["author"] = {
+				"query": author
+			}
+			dic["key"] = "author"
 			dic["value"] = author
 	elif len(abstract) > 0:
 		mapping["query"]["match"]["abstract"] = {
@@ -125,9 +130,12 @@ def nomalSearch(request = None,
 		mapping["post_filter"] = logic
 	
 	origin = ES.search(index=ES_INDEX, body=mapping)
-	count_info = ES.count(index=ES_INDEX, body={"query" : logic})
-	count = count_info['count']
-	
+	if exact == False:
+		count_info = ES.count(index=ES_INDEX, body={"query" : logic})
+		count = count_info['count']
+	else:
+		count_info = ES.count(index=ES_INDEX, body={"query" : mapping["query"]})
+		count = count_info['count']
 	papers = origin["hits"]["hits"]
 	papers = [x["_source"] for x in papers]
 	
