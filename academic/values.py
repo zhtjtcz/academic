@@ -1,4 +1,6 @@
 from elasticsearch import Elasticsearch
+import os
+import platform
 
 ERROR = 0
 ACCEPT = 1
@@ -13,9 +15,14 @@ SALT2 = 'w'
 SALT3 = '1'
 SALT4 = '7'
 
-ES = Elasticsearch(
-	hosts = '123.60.215.20:9128'
-)
+if platform.system() == 'Linux':
+	ES = Elasticsearch(
+		hosts = 'localhost:9128'
+	)
+else:
+	ES = Elasticsearch(
+		hosts = '123.60.215.20:9128'
+	)
 
 ES_INDEX = 'main'
 
