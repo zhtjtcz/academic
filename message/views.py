@@ -349,16 +349,16 @@ def cancel_claim_paper(request):
 	uid = data_json.get('uid', 0)
 	if uid == 0:
 		uid = request.session['user']
-	name = Scholar.objects.get(uid=uid).realname
-	scholar = Scholar.objects.get(uid=uid)
+	scholar = Scholar.objects.get(uid = uid)
+	name = scholar.realname
 	paper = Paper.objects.get(id = pid)
 	scholar.cite -= paper.cite
 	scholar.save()
 	# Update Cite
 
-	author_list = [i.author for i in AuthorInfo.objects.filter(pid=pid)]
+	author_list = [i.author for i in AuthorInfo.objects.filter(pid = pid)]
 	for i in author_list:
-		if difflib.SequenceMatcher(lambda x:x == " ", name, i).ratio() >= 0.9:
+		if difflib.SequenceMatcher(lambda x:x == " ", name.lower(), i.lower()).ratio() >= 0.9:
 			name = i
 			break
 	while name in author_list:
