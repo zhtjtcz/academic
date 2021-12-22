@@ -76,6 +76,7 @@ def claim_paper(request):
 				paper = get_paper(pid)
 			else:
 				paper = get_paper_by_id(pid)
+				pid = create_paper(paper)
 			if Claim.objects.filter(uid=uid, pid=pid).exists() == True:
 				# return JsonResponse({'result': ERROR, 'message': r'您已认领该论文！'})
 				final_success = False
