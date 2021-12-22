@@ -23,8 +23,9 @@ def search(request):
 		sorted = int(data_json.get('sorted', 0))
 		group = data_json.get('group', [])
 		exact = data_json.get('exact', False)
+		refresh = data_json.get('refresh', False)
 		result = nomalSearch(request = request, title = title, author = author, abstract = abstract, field = field, doi = doi, keyword = keyword,
-			page = page, limit = limit, sorted = sorted, group = group, exact = exact)
+			page = page, limit = limit, sorted = sorted, group = group, exact = exact, refresh = False)
 		return JsonResponse({'result': ACCEPT, 'message': result})
 
 @csrf_exempt

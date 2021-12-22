@@ -43,7 +43,7 @@ def getCountData(query = {}, bucket = ""):
 def nomalSearch(request = None,
 				title = "", author = "", abstract = "",  doi = "", field = "", keyword = "",
 				page = 1, limit = 20,
-				sorted = 0, group = [], exact = False):
+				sorted = 0, group = [], exact = False, refresh = False):
 	mapping = {
 		"query": {
 			"match": {}
@@ -224,8 +224,6 @@ def advanceSearch(params, page, limit, group = []):
 	else:
 		x = mapping["post_filter"]
 		y = mapping["query"]
-		print(x)
-		print(y)
 		now = getBasicLogic()
 		now["bool"]["must"].append(x)
 		now["bool"]["must"].append(y)
