@@ -47,6 +47,18 @@ def create_paper(info):
 		author.save()
 	return paper.id
 
+def get_paper_by_id(id):
+	mapping = {
+		"query": {
+			"match": {"id": id}
+		},
+		"from": 0,
+		"size": 1
+	}
+	origin = ES.search(index = ES_INDEX, body = mapping)
+	paper = origin["hits"]["hits"]
+	paper = [x["_source"] for x in paper]
+	return paper[0]
 
 @csrf_exempt
 def claim_paper(request):
@@ -58,11 +70,12 @@ def claim_paper(request):
 		uid = request.session['user']
 		data_json = json.loads(request.body)
 		papers = data_json.get('paper', [])
-		for paper in papers:
-			if Paper.objects.filter(id=int(paper['id'])).exists() == False:
-				pid = create_paper(paper)
+		for index in papers:
+			pid = int(index)
+			if Paper.objects.filter(id = pid).exists() == True:
+				paper = get_paper(pid)
 			else:
-				pid = Paper.objects.get(id=int(paper['id'])).id
+				paper = get_paper_by_id(pid)
 			if Claim.objects.filter(uid=uid, pid=pid).exists() == True:
 				# return JsonResponse({'result': ERROR, 'message': r'您已认领该论文！'})
 				final_success = False
