@@ -142,7 +142,8 @@ def get_introduction(request):
     if request.method == 'POST':
         if check_session(request) == 0:
             return JsonResponse({'result': ERROR, 'message': r'请先登录'})
-        uid = request.session['user']
+        data_json = json.loads(request.body)
+        uid = data_json.get('id', request.session['user'])
         scholar = Scholar.objects.get(uid=uid)
         intro = scholar.introduction
         if intro is None:
