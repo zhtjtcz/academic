@@ -70,13 +70,10 @@ def claim_paper(request):
 		uid = request.session['user']
 		data_json = json.loads(request.body)
 		papers = data_json.get('paper', [])
-		for index in papers:
-			pid = int(index)
-			if Paper.objects.filter(id = pid).exists() == True:
-				paper = get_paper(pid)
-			else:
-				paper = get_paper_by_id(pid)
-				pid = create_paper(paper)
+		for paper in papers:
+			pid = int(paper['id'])
+			if Paper.objects.filter(id = pid).exists() == False:
+				create_paper(paper)
 			if Claim.objects.filter(uid=uid, pid=pid).exists() == True:
 				# return JsonResponse({'result': ERROR, 'message': r'您已认领该论文！'})
 				final_success = False
