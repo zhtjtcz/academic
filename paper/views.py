@@ -355,6 +355,7 @@ def get_comments(request):
 	result = []
 	for x in comments:
 		if x.reply == 0:
+			print(x.uid)
 			result.append({
 				'id': x.id,
 				'uid': x.uid,
