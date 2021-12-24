@@ -421,7 +421,32 @@ def cancel_scholar(request):
 
 	claims = [x for x in Claim.objects.filter(uid = uid)]
 	for i in claims:
+		author_list = [j.author for j in AuthorInfo.objects.filter(pid = i.pid)]
+		for j in author_list:
+			if difflib.SequenceMatcher(lambda x:x == " ", name.lower(), j.lower()).ratio() >= 0.9:
+				name = j
+				break
+		while name in author_list:
+			author_list.remove(name)
+		for author_name in author_list:
+			r1 = Relation.objects.get(name1=name, name2=author_name)
+			if r1.times > 1:
+				r1.times -= 1
+				r1.save()
+			else:
+				r1.delete()
+			r2 = Relation.objects.get(name1=author_name, name2=name)
+			if r2.times > 1:
+				r2.times -= 1
+				r2.save()
+			else:
+				r2.delete()
 		i.delete()
+	# Delete claim and relation
+
+	scholar.delete()
+	# Delete all information
+
 	feedback = Feedback(
 		uid = uid,
 		mid = 0,
