@@ -398,6 +398,30 @@ def upload_img(request):
                 destination.write(chunk)
     return JsonResponse({'result': ACCEPT, 'message': r'上传成功！', 'url': r'/message/look_feedback_img?file_name='+filename})
 
+@csrf_exempt
+def cancel_scholar(request):
+	if request.method != 'POST':
+		return JsonResponse({'result': ERROR, 'message': r'错误'})
+	data_json = json.loads(request.body)
+	id = check_session(request)
+	if id != 1:
+		return JsonResponse({'result': ERROR, 'message': r'权限错误'})
+	uid = int(data_json.get('uid', 1))
+	user = User.objects.get(id = uid)
+	if user.scholar == False:
+		return JsonResponse({'result': ACCEPT, 'message': r'该用户已经不是学者！'})
+	user.scholar = False
+	user.save()
+	
+	scholar = Scholar.objects.get(uid = uid)
+	scholar.cite = 0
+	scholar.save()
+
+	claims = [x for x in Claim.objects.filter(uid = uid)]
+	for i in claims:
+		i.delete()
+	return JsonResponse({'result': ACCEPT, 'message': r'已取消该用户学者身份！'})
+
 #
 # @csrf_exempt
 # def get_img(request):

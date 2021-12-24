@@ -21,5 +21,6 @@ urlpatterns = [
 	path('find_scholar', find_scholar),
 	path('jump', jump),
 	path('upload_img', upload_img),
+	path('cancel_scholar', cancel_scholar),
 	# path('get_img', get_img)
 ]
