@@ -404,7 +404,7 @@ def comment(request):
 
 	reply = User.objects.get(id = id).username + MAGIC + paper['title'] + MAGIC + data_json.get('comment', '')
 	if int(data_json.get('reply', 0)) == 0:
-		if Claim.objects.filter(pid = pid).exists() == True:
+		if Claim.objects.filter(pid = pid).exists() == True and Claim.objects.filter(pid = pid, uid = id).exists() == False:
 			l = [x for x in Claim.objects.filter(pid = pid)]
 			for x in l:
 				feedback = Feedback(
@@ -418,16 +418,17 @@ def comment(request):
 				)
 				feedback.save()
 	else:
-		feedback = Feedback(
-			uid = int(data_json.get('replyuid', 0)),
-			mid = pid,
-			type = 6,
-			reply = reply,
-			isdeal = 1,
-			date = datetime.now(),
-			url = '',
-		)
-		feedback.save()
+		if int(data_json.get('replyuid', 0)) != id:
+			feedback = Feedback(
+				uid = int(data_json.get('replyuid', 0)),
+				mid = pid,
+				type = 6,
+				reply = reply,
+				isdeal = 1,
+				date = datetime.now(),
+				url = '',
+			)
+			feedback.save()
 	
 	return JsonResponse({'result': ACCEPT, 'message': r'评论成功！'})
 
