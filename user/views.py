@@ -23,6 +23,8 @@ from hashlib import md5
 import re
 from academic.settings import Redis
 import difflib
+from message.models import *
+from datetime import datetime
 
 @csrf_exempt
 def test(request):
@@ -420,6 +422,14 @@ def cancel_scholar(request):
 	claims = [x for x in Claim.objects.filter(uid = uid)]
 	for i in claims:
 		i.delete()
+	feedback = Feedback(
+		uid = uid,
+		mid = 0,
+		type = 7,
+		isdeal = True,
+		date = str(datetime.now())[:19]
+	)
+	feedback.save()
 	return JsonResponse({'result': ACCEPT, 'message': r'已取消该用户学者身份！'})
 
 #
