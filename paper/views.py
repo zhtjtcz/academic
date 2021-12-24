@@ -192,6 +192,7 @@ def get_paper_info(request):
 
 @csrf_exempt
 def get_hot_paper(request):
+	Redis.zremrangebyscore(name = "paper", min = 0, max = 100000000)
 	result = Redis.zrevrange(name="paper", start=1, end=10, withscores=True, score_cast_func=float)
 	result = [x for x in result]
 	clear = []
