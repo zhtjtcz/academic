@@ -193,7 +193,7 @@ def get_paper_info(request):
 @csrf_exempt
 def get_hot_paper(request):
 	# Redis.zremrangebyscore(name = "paper", min = 0, max = 100000000)
-	result = Redis.zrevrange(name="paper", start=1, end=1000, withscores=True, score_cast_func=float)
+	result = Redis.zrevrange(name="paper", start=1, end=10, withscores=True, score_cast_func=float)
 	result = [x for x in result]
 	clear = []
 	for x in result:
@@ -208,8 +208,6 @@ def get_hot_paper(request):
 				'id': i[0],
 				'hot': int(i[1] * BETA),
 			} for i in clear]
-			if len(result) >= 10:
-				break
 	return JsonResponse({'result': result})
 
 
