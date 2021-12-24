@@ -421,6 +421,7 @@ def cancel_scholar(request):
 
 	claims = [x for x in Claim.objects.filter(uid = uid)]
 	for i in claims:
+		name = scholar.realname
 		author_list = [j.author for j in AuthorInfo.objects.filter(pid = i.pid)]
 		for j in author_list:
 			if difflib.SequenceMatcher(lambda x:x == " ", name.lower(), j.lower()).ratio() >= 0.9:
