@@ -345,8 +345,8 @@ def cancel_claim_paper(request):
 	if request.method != 'POST':
 		return JsonResponse({'result': ERROR, 'message': r'????'})
 	data_json = json.loads(request.body)
-	pid = data_json['pid']
-	uid = data_json.get('uid', 0)
+	pid = int(data_json['pid'])
+	uid = int(data_json.get('uid', 0))
 	if uid == 0:
 		uid = request.session['user']
 	scholar = Scholar.objects.get(uid = uid)
