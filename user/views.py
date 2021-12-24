@@ -208,7 +208,7 @@ def get_scholar_info(request):
 		else:
 			dic[i['year']] = 1
 	if scholar.website == None or scholar.website == "":
-		website = "该学者还没有个人网站"
+		website = ""
 	else:
 		website = scholar.website
 	return JsonResponse({'name': scholar.realname, 'cite': scholar.cite, 'belong': scholar.belong, 'interest': scholar.interest,
