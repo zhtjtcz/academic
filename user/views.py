@@ -429,17 +429,11 @@ def cancel_scholar(request):
 		while name in author_list:
 			author_list.remove(name)
 		for author_name in author_list:
-			r1 = Relation.objects.get(name1=name, name2=author_name)
-			if r1.times > 1:
-				r1.times -= 1
-				r1.save()
-			else:
+			if Relation.objects.filter(name1=name, name2=author_name).exists() == True:
+				r1 = Relation.objects.get(name1=name, name2=author_name)
 				r1.delete()
-			r2 = Relation.objects.get(name1=author_name, name2=name)
-			if r2.times > 1:
-				r2.times -= 1
-				r2.save()
-			else:
+			if Relation.objects.filter(name1=author_name, name2=name).exists() == True:
+				r2 = Relation.objects.get(name1=author_name, name2=name)
 				r2.delete()
 		i.delete()
 	# Delete claim and relation
