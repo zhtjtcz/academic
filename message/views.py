@@ -126,7 +126,7 @@ def get_feedbacks(request):
 	origin = [x for x in Feedback.objects.filter(uid = id)]
 	feedbacks = []
 	for x in origin:
-		if x.type != 5 and x.type != 6:				# FUCK REPLY
+		if x.type != 5 and x.type != 6 and x.type != 7:				# FUCK REPLY
 			message = Message.objects.get(id = x.mid)
 			feedbacks.append({
 				'id': x.id,
