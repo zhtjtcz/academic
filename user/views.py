@@ -207,8 +207,12 @@ def get_scholar_info(request):
 			dic[i['year']] += 1
 		else:
 			dic[i['year']] = 1
+	if scholar.website == None or scholar.website == "":
+		website = "该学者还没有个人网站"
+	else:
+		website = scholar.website
 	return JsonResponse({'name': scholar.realname, 'cite': scholar.cite, 'belong': scholar.belong, 'interest': scholar.interest,
-						'website': scholar.website, 'papers': papers, 'year': dic, 'visit': int(visit)})
+						'website': website, 'papers': papers, 'year': dic, 'visit': int(visit)})
 
 @csrf_exempt
 def change_password(request):
