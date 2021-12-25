@@ -1,6 +1,7 @@
-from elasticsearch import Elasticsearch
 import os
 import platform
+from elasticsearch import Elasticsearch
+import yaml
 
 ERROR = 0
 ACCEPT = 1
@@ -15,11 +16,14 @@ SALT2 = 'w'
 SALT3 = '1'
 SALT4 = '7'
 
+YAMLFILE = open("config.yaml", "r")
+YAMLINFO = yaml.load(YAMLFILE.read(), Loader=yaml.FullLoader)
+
 ES = Elasticsearch(
-	hosts = '123.60.215.20:9128'
+	hosts = YAMLINFO['ES_IP']
 )
 
-ES_INDEX = 'main'
+ES_INDEX = YAMLINFO['ES_INDEX']
 
 APPEAL_PAPER = 1
 APPEAL_IDENTITY = 2
